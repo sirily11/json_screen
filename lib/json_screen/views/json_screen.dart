@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:json_screen/json_screen.dart';
 import 'package:json_screen/json_screen/models/converter.dart';
 import 'package:json_screen/json_screen/models/page.dart';
-import 'package:json_screen/json_screen/models/container.dart' as c;
-import 'package:json_screen/json_screen/views/subviews/blocks/image_view.dart';
-import 'package:json_screen/json_screen/views/subviews/blocks/text_view.dart';
+import 'package:json_screen/json_screen/models/utils.dart';
+import 'package:page_view_indicators/page_view_indicators.dart';
 
 typedef void OnLinkTap(String link);
 typedef void OnImageTap(String imageSrc);
@@ -22,6 +21,7 @@ class JsonScreen extends StatefulWidget {
 
 class _JsonScreenState extends State<JsonScreen> {
   List<Page> pages = [];
+  final _currentPageNotifier = ValueNotifier<int>(0);
 
   @override
   void initState() {
@@ -42,37 +42,41 @@ class _JsonScreenState extends State<JsonScreen> {
     super.didUpdateWidget(oldWidget);
   }
 
-  /// render List of blocks
-  Widget _renderBlock(Block block) {
-    if (block is ImageBlock) {
-      return ImageView(
-        block: block,
-      );
-    } else if (block is TextBlock) {
-      return TextView(
-        block: block,
-      );
-    }
-    return null;
-  }
-
-  /// render page
-  Widget _renderPage(Page page){
-   
-  }
-
-
-  /// render container
-  Widget _renderContainer(c.Container container) {
-    if (container is c.HorizontalCarousel) {}
-
-    return Container();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      text: TextSpan(children: []),
+    List<Widget> pages = this
+        .pages
+        .map(
+          (e) => Scrollbar(
+            child: SingleChildScrollView(
+              child: renderPage(e),
+            ),
+          ),
+        )
+        .toList();
+
+    return Stack(
+      children: <Widget>[
+        PageView(
+          children: pages,
+          onPageChanged: (index) {
+            _currentPageNotifier.value = index;
+          },
+        ),
+        pages.length > 0
+            ? Positioned(
+                bottom: 30,
+                width: MediaQuery.of(context).size.width,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: CirclePageIndicator(
+                    currentPageNotifier: _currentPageNotifier,
+                    itemCount: pages.length,
+                  ),
+                ),
+              )
+            : Container()
+      ],
     );
   }
 }

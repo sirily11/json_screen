@@ -8,6 +8,6 @@ class ImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    throw UnimplementedError();
+    return Image.network(block.data);
   }
 }

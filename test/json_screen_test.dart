@@ -107,7 +107,40 @@ void main() {
       var pages = converter.convert();
       expect(pages.length, 2);
       expect(pages[0].containers.length, 1);
-      expect(pages[0].containers[0].children.length, 4);
+      expect(pages[0].containers[0].children.length, 5);
+    });
+  });
+
+  group("Empty test", () {
+    var emptyEverything = [];
+    var emptyContainer = [
+      {"types": "page", "containers": []}
+    ];
+    var emptyBlcok = [
+      {
+        "types": "page",
+        "containers": [
+          {"types": "container", "blocks": []}
+        ]
+      }
+    ];
+
+    test("empty everything", () {
+      var converter = JSONConverter(json: emptyEverything);
+      var content = converter.convert();
+      expect(content.length, 0);
+    });
+
+    test("empty container", () {
+      var converter = JSONConverter(json: emptyContainer);
+      var content = converter.convert();
+      expect(content[0].containers.length, 0);
+    });
+
+    test("empty blocks", () {
+      var converter = JSONConverter(json: emptyBlcok);
+      var content = converter.convert();
+      expect(content[0].containers[0].children.length, 0);
     });
   });
 }

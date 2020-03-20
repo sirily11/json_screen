@@ -1,9 +1,10 @@
 import 'package:json_screen/json_screen/models/container.dart';
 
-enum PageTypes { page, vertical }
+enum PageTypes { page }
 
 class Page<T extends Container> {
   PageTypes types = PageTypes.page;
+
   /// Containers within the page
   List<T> containers = [];
 
@@ -21,19 +22,6 @@ class Page<T extends Container> {
   toJSON() {
     return {
       "types": types.toString().replaceFirst("pageTypes", ""),
-      "containers": containers.map((e) => e.toJSON()).toList()
-    };
-  }
-}
-
-class VerticalPage<T> extends Page {
-  PageTypes types = PageTypes.page;
-
-  VerticalPage({List<Container> containers}) : super(containers: containers);
-
-  toJSON() {
-    return {
-      "types": types.toString().replaceFirst("pageTypes.  ", ""),
       "containers": containers.map((e) => e.toJSON()).toList()
     };
   }

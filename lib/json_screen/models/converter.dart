@@ -11,7 +11,7 @@ abstract class Converter {
 /// into pages.
 class JSONConverter implements Converter {
   /// json data
-  List<Map<String, dynamic>> json;
+  List<dynamic> json;
 
   JSONConverter({this.json});
 
@@ -26,9 +26,6 @@ class JSONConverter implements Converter {
         case PageTypes.page:
           pages.add(Page(containers: containers));
           break;
-        case PageTypes.vertical:
-          pages.add(VerticalPage(containers: containers));
-          break;
       }
     }
 
@@ -36,7 +33,7 @@ class JSONConverter implements Converter {
   }
 
   /// Convert containers json
-  List<Container> _convertContainer(List<Map<String, dynamic>> containerJSON) {
+  List<Container> _convertContainer(List<dynamic> containerJSON) {
     List<Container> containers = [];
 
     for (var j in containerJSON) {
@@ -55,22 +52,34 @@ class JSONConverter implements Converter {
   }
 
   /// convert json into blocks
-  List<Block> _convertBlock(List<Map<String, dynamic>> blockJSON) {
+  List<Block> _convertBlock(List<dynamic> blockJSON) {
     List<Block> blocks = [];
     for (var j in blockJSON) {
       Block block = Block.fromJSON(j);
       switch (block.types) {
         case BlockTypes.text:
           blocks.add(TextBlock.fromJSON(j));
+          // add new line if end with \n
+          if (block.content.endsWith("\n")) {
+            blocks.add(NewLineBlock());
+          }
           break;
         case BlockTypes.image:
           blocks.add(ImageBlock.fromJSON(j));
           break;
         case BlockTypes.quote:
           blocks.add(QuoteBlock.fromJSON(j));
+          blocks.add(NewLineBlock());
           break;
         case BlockTypes.table:
-          // TODO: Handle this case.
+          List<Block> columns = this._convertBlock(j['columns']);
+          List<List<Block>> rows = (j['rows'] as List<List>)
+              .map((e) => this._convertBlock(e))
+              .toList();
+          blocks.add(
+            TableBlock(columns: columns, rows: rows, content: block.content),
+          );
+          blocks.add(NewLineBlock());
           break;
         case BlockTypes.list:
           List<Block> children = this._convertBlock(j['children'] ?? []);
@@ -78,6 +87,7 @@ class JSONConverter implements Converter {
           break;
         case BlockTypes.header:
           blocks.add(HeaderBlock.fromJSON(j));
+          blocks.add(NewLineBlock());
           break;
         case BlockTypes.link:
           blocks.add(LinkBlock.fromJSON(j));

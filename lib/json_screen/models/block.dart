@@ -1,4 +1,5 @@
 import 'package:json_screen/json_screen.dart';
+import 'package:json_screen/json_screen/models/converter.dart';
 
 enum BlockTypes {
   text,
@@ -74,7 +75,13 @@ class TextBlock extends Block {
   TextBlock({this.content}) : super(content: content);
 
   factory TextBlock.fromJSON(Map<String, dynamic> json) {
-    return TextBlock(content: json['content']);
+    if ((json['content'] as String).endsWith("\n")) {
+      String content = json['content'];
+
+      return TextBlock(content: content.substring(0, content.length - 1));
+    }
+
+    return TextBlock(content: (json['content'] as String));
   }
 }
 
@@ -154,7 +161,7 @@ class NewLineBlock extends TextBlock {
   String content = "\n";
 }
 
-class QuoteBlock extends TextBlock {
+class QuoteBlock extends Block {
   @override
   BlockTypes types = BlockTypes.quote;
 
@@ -162,5 +169,27 @@ class QuoteBlock extends TextBlock {
 
   factory QuoteBlock.fromJSON(Map<String, dynamic> json) {
     return QuoteBlock(content: json['content']);
+  }
+}
+
+class TableBlock extends Block {
+  @override
+  BlockTypes types = BlockTypes.table;
+
+  /// Header
+  List<Block> columns = [];
+
+  /// rows
+  List<List<Block>> rows = [];
+
+  TableBlock({String content, this.columns, this.rows})
+      : super(content: content);
+
+  toJSON() {
+    return {
+      "content": content,
+      "columns": columns.map((e) => e.toJSON()).toList(),
+      "rows": rows.map((e) => e.map((el) => el.toJSON()).toList()).toList()
+    };
   }
 }
