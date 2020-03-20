@@ -4,9 +4,11 @@ import 'package:json_screen/json_screen/models/utils.dart';
 import 'package:json_screen/json_screen/views/json_screen.dart';
 
 class TableView extends StatelessWidget {
+  final OnLinkTap onLinkTap;
+  final OnImageTap onImageTap;
   final TableBlock tableBlock;
 
-  TableView({this.tableBlock});
+  TableView({this.tableBlock, this.onLinkTap, this.onImageTap});
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +25,16 @@ class TableView extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               child: DataTable(
                 columns: tableBlock.columns
-                    .map((e) => DataColumn(label: renderBlock(e)))
+                    .map((e) => DataColumn(
+                        label: renderBlock(e, onLinkTap, onImageTap)))
                     .toList(),
                 rows: tableBlock.rows
                     .map(
                       (e) => DataRow(
-                        cells:
-                            e.map((el) => DataCell(renderBlock(el))).toList(),
+                        cells: e
+                            .map((el) => DataCell(
+                                renderBlock(el, onLinkTap, onImageTap)))
+                            .toList(),
                       ),
                     )
                     .toList(),

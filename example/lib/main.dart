@@ -22,6 +22,12 @@ class MyApp extends StatelessWidget {
           title: Text("JSON Screen"),
         ),
         body: JsonScreen(
+          onImageTap: (string) {
+            print(string);
+          },
+          onLinkTap: (string) {
+            print(string);
+          },
           json: [
             {
               "types": "page",
@@ -36,13 +42,22 @@ class MyApp extends StatelessWidget {
                     },
                     {"types": "quote", "content": "Below is the content"},
                     {"types": "text", "content": "hello "},
-                    {"types": "text", "content": "world"},
+                    {
+                      "types": "link",
+                      "content": "world",
+                      "data": "https://google.com"
+                    },
                     {
                       "types": "image",
                       "content": "google",
                       "data":
                           "https://www.google.com/logos/doodles/2020/spring-2020-northern-hemisphere-6753651837108323-l.png"
                     },
+                    {
+                      "types": "header",
+                      "level": 5,
+                      "content": "Also Horizontal Carousel"
+                    }
                   ]
                 },
                 {
@@ -65,7 +80,37 @@ class MyApp extends StatelessWidget {
                       "content": "google",
                       "data":
                           "https://www.google.com/logos/doodles/2020/spring-2020-northern-hemisphere-6753651837108323-l.png"
+                    },
+                    {
+                      "types": "image",
+                      "content": "google",
+                      "data":
+                          "https://www.google.com/logos/doodles/2020/spring-2020-northern-hemisphere-6753651837108323-l.png"
                     }
+                  ]
+                },
+                {
+                  "types": "container",
+                  "blocks": [
+                    {"types": "header", "level": 5, "content": "Story Card"}
+                  ]
+                },
+                {
+                  "types": "story",
+                  "blocks": [
+                    {
+                      "types": "image",
+                      "content": "google",
+                      "data":
+                          "https://www.google.com/logos/doodles/2020/spring-2020-northern-hemisphere-6753651837108323-l.png"
+                    },
+                    {
+                      "types": "image",
+                      "content": "google",
+                      "data":
+                          "https://www.google.com/logos/doodles/2020/spring-2020-northern-hemisphere-6753651837108323-l.png"
+                    },
+                    {"types": "text", "content": "hello story"}
                   ]
                 }
               ]
@@ -104,6 +149,22 @@ class MyApp extends StatelessWidget {
                           {"types": "text", "content": "abc"},
                           {"types": "text", "content": "abc"}
                         ]
+                      ]
+                    },
+                    {
+                      "types": "list",
+                      "styles": "unordered",
+                      "children": [
+                        {"types": "text", "content": "list 1"},
+                        {"types": "text", "content": "list 2"},
+                        {
+                          "types": "list",
+                          "styles": "ordered",
+                          "children": [
+                            {"types": "text", "content": "list 3"},
+                            {"types": "text", "content": "list 4"}
+                          ]
+                        }
                       ]
                     }
                   ]

@@ -20,8 +20,12 @@ enum BlockTypes {
   header,
 
   /// link component
-  link
+  link,
+
+  web
 }
+
+enum ListStyles { unordered, ordered }
 
 class Block {
   /// Type of the block
@@ -124,16 +128,28 @@ class ListBlock extends Block {
   @override
   BlockTypes types = BlockTypes.list;
 
+  ListStyles styles = ListStyles.unordered;
+
   List<Block> children = [];
 
-  ListBlock({this.content, this.children}) : super(content: content);
+  ListBlock({this.content, this.children, this.styles})
+      : super(content: content);
+
+  static ListStyles getStyles(Map<String, dynamic> json) {
+    ListStyles s = ListStyles.values.firstWhere(
+      (element) => element.toString() == "ListStyles." + "${json['styles']}",
+      orElse: () => ListStyles.unordered,
+    );
+    return s;
+  }
 
   @override
   Map<String, dynamic> toJSON() {
     return {
       "content": content,
       "types": types.toString().replaceFirst("BlockTypes.", ""),
-      "children": children.map((e) => e.toJSON())
+      "children": children.map((e) => e.toJSON()),
+      "styles": styles.toString().replaceFirst("ListStyles.", "")
     };
   }
 }
@@ -191,5 +207,17 @@ class TableBlock extends Block {
       "columns": columns.map((e) => e.toJSON()).toList(),
       "rows": rows.map((e) => e.map((el) => el.toJSON()).toList()).toList()
     };
+  }
+}
+
+class WebViewBlock extends DataBlock {
+  @override
+  BlockTypes types = BlockTypes.web;
+
+  WebViewBlock({String content, String data})
+      : super(content: content, data: data);
+
+  factory WebViewBlock.fromJSON(Map<String, dynamic> json) {
+    return WebViewBlock(content: json['content'], data: json['data']);
   }
 }

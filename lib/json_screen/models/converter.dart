@@ -46,6 +46,12 @@ class JSONConverter implements Converter {
         case ContainerTypes.horizontal:
           containers.add(HorizontalCarousel(children: blocks));
           break;
+        case ContainerTypes.story:
+          double height = j['height'];
+          double width = j['width'];
+          containers.add(
+              StoryContainer(children: blocks, width: width, height: height));
+          break;
       }
     }
     return containers;
@@ -82,8 +88,12 @@ class JSONConverter implements Converter {
           blocks.add(NewLineBlock());
           break;
         case BlockTypes.list:
+          ListStyles styles = ListBlock.getStyles(j);
           List<Block> children = this._convertBlock(j['children'] ?? []);
-          blocks.add(ListBlock(children: children, content: block.content));
+          blocks.add(
+            ListBlock(
+                children: children, content: block.content, styles: styles),
+          );
           break;
         case BlockTypes.header:
           blocks.add(HeaderBlock.fromJSON(j));
@@ -91,6 +101,9 @@ class JSONConverter implements Converter {
           break;
         case BlockTypes.link:
           blocks.add(LinkBlock.fromJSON(j));
+          break;
+        case BlockTypes.web:
+          blocks.add(WebViewBlock.fromJSON(j));
           break;
       }
     }

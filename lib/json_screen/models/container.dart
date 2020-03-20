@@ -1,6 +1,6 @@
 import 'package:json_screen/json_screen.dart';
 
-enum ContainerTypes { container, horizontal }
+enum ContainerTypes { container, horizontal, story }
 
 /// Base Container
 class Container<T extends Block> {
@@ -30,6 +30,16 @@ class Container<T extends Block> {
 
 /// Horizontal Carousel Container
 class HorizontalCarousel<T extends Block> extends Container {
+  ContainerTypes types = ContainerTypes.horizontal;
   HorizontalCarousel({List<T> children, ContainerTypes types})
+      : super(children: children, types: types);
+}
+
+class StoryContainer<T extends Block> extends Container {
+  ContainerTypes types = ContainerTypes.story;
+  double height;
+  double width;
+  StoryContainer(
+      {List<T> children, ContainerTypes types, this.height = 300, this.width})
       : super(children: children, types: types);
 }

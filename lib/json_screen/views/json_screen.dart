@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:json_screen/json_screen.dart';
 import 'package:json_screen/json_screen/models/converter.dart';
 import 'package:json_screen/json_screen/models/page.dart';
 import 'package:json_screen/json_screen/models/utils.dart';
 import 'package:page_view_indicators/page_view_indicators.dart';
 
-typedef void OnLinkTap(String link);
-typedef void OnImageTap(String imageSrc);
+typedef Future<void> OnLinkTap(String link);
+typedef Future<void> OnImageTap(String imageSrc);
 
 class JsonScreen extends StatefulWidget {
   final List<Map<String, dynamic>> json;
@@ -44,39 +43,41 @@ class _JsonScreenState extends State<JsonScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> pages = this
-        .pages
-        .map(
-          (e) => Scrollbar(
-            child: SingleChildScrollView(
-              child: renderPage(e),
-            ),
-          ),
-        )
-        .toList();
-
-    return Stack(
-      children: <Widget>[
-        PageView(
-          children: pages,
-          onPageChanged: (index) {
-            _currentPageNotifier.value = index;
-          },
-        ),
-        pages.length > 0
-            ? Positioned(
-                bottom: 30,
-                width: MediaQuery.of(context).size.width,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: CirclePageIndicator(
-                    currentPageNotifier: _currentPageNotifier,
-                    itemCount: pages.length,
+    return LayoutBuilder(builder: (context, cons) {
+      return Stack(
+        children: <Widget>[
+          PageView.builder(
+            itemCount: this.pages.length,
+            itemBuilder: (context, index) {
+              return Scrollbar(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: renderPage(this.pages[index], context,
+                        widget.onLinkTap, widget.onImageTap),
                   ),
                 ),
-              )
-            : Container()
-      ],
-    );
+              );
+            },
+            onPageChanged: (index) {
+              _currentPageNotifier.value = index;
+            },
+          ),
+          pages.length > 0
+              ? Positioned(
+                  bottom: 30,
+                  width: MediaQuery.of(context).size.width,
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: CirclePageIndicator(
+                      currentPageNotifier: _currentPageNotifier,
+                      itemCount: pages.length,
+                    ),
+                  ),
+                )
+              : Container()
+        ],
+      );
+    });
   }
 }
