@@ -1,6 +1,6 @@
 import 'package:json_screen/json_screen.dart';
 
-enum ContainerTypes { container, horizontal, story }
+enum ContainerTypes { container, horizontal, story, form }
 
 /// Base Container
 class Container<T extends Block> {
@@ -51,4 +51,41 @@ class StoryContainer<T extends Block> extends Container {
 
   factory StoryContainer.copyWith({List<T> children}) =>
       StoryContainer(children: children);
+}
+
+class FormContainer extends Container {
+  ContainerTypes types = ContainerTypes.form;
+
+  /// JSON Schema for form
+  List<dynamic> schema;
+
+  /// submit url
+  String url;
+
+  /// Submit method. For example, POST, PATCH
+  String method;
+
+  double height;
+
+  double width;
+
+  FormContainer(
+      {this.schema,
+      this.url,
+      this.method,
+      this.height = 300.0,
+      this.width = 300.0})
+      : super(children: []);
+
+  factory FormContainer.fromJSON(Map<String, dynamic> json) => FormContainer(
+      method: json['method'],
+      url: json['url'],
+      schema: json['schema'],
+      height: json['height'],
+      width: json['width']);
+
+  @override
+  toJSON() {
+    return {"method": this.method, "url": this.url, "schema": this.schema};
+  }
 }

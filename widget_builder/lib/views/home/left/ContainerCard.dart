@@ -48,6 +48,10 @@ class ContainerCard extends StatelessWidget {
       ContainerEditPanel(
         container: container,
       ),
+      if (container is c.FormContainer)
+        ContainerFieldValue(
+          container: container,
+        ),
       ...w
     ];
 

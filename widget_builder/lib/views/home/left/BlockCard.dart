@@ -98,6 +98,7 @@ class BlockCard extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
+                tooltip: "Delete block",
                 onPressed: () {
                   provider.removeBlock(block, container);
                 },

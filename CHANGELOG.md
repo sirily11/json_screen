@@ -1,3 +1,5 @@
-## [0.0.1] - TODO: Add release date.
+## [0.5.0] 2020.3.20
 
-* TODO: Describe initial release.
+- Added form container
+- Added widget_builder app
+- Added basic design

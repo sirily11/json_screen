@@ -170,6 +170,32 @@ class MyApp extends StatelessWidget {
                   ]
                 },
               ]
+            },
+            {
+              "types": "page",
+              "containers": [
+                {
+                  "types": "form",
+                  "height": 200.0,
+                  "schema": [
+                    {
+                      "label": "Item Name",
+                      "readonly": false,
+                      "extra": {
+                        "help": "Please Enter your item name",
+                        "default": ""
+                      },
+                      "name": "name",
+                      "widget": "text",
+                      "required": true,
+                      "translated": false,
+                      "validations": {
+                        "length": {"maximum": 1024}
+                      }
+                    }
+                  ]
+                },
+              ]
             }
           ],
         ),

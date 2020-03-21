@@ -1,5 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:json_schema_form/json_textform/JSONSchemaForm.dart';
 import 'package:json_screen/json_screen/models/block.dart';
 import 'package:json_screen/json_screen/models/page.dart';
 import 'package:json_screen/json_screen/views/json_screen.dart';
@@ -60,7 +62,9 @@ Widget renderPage(Page page, BuildContext context, OnLinkTap onlinkTap,
   return RichText(
     text: TextSpan(
       children: page.containers.map((e) {
-        if (e is c.HorizontalCarousel || e is c.StoryContainer) {
+        if (e is c.HorizontalCarousel ||
+            e is c.StoryContainer ||
+            e is c.FormContainer) {
           return WidgetSpan(
             child: renderContainer(e, context, onlinkTap, onImageTap) as Widget,
           );
@@ -98,6 +102,14 @@ dynamic renderContainer(c.Container container, BuildContext context,
       ),
     );
   } else if (container is c.StoryContainer) {
+    if (container.children.length == 0) {
+      return Center(
+        child: Text(
+          "Blocks required",
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
     return Padding(
       key: Key("story-card"),
       padding: const EdgeInsets.all(8.0),
@@ -114,6 +126,35 @@ dynamic renderContainer(c.Container container, BuildContext context,
           progressPosition: ProgressPosition.bottom,
           repeat: true,
         ),
+      ),
+    );
+  } else if (container is c.FormContainer) {
+    if (container.schema == null) {
+      return Center(
+        child: Text(
+          "Schema is required",
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
+    return Container(
+      height: container.height,
+      child: JSONSchemaForm(
+        showSubmitButton: true,
+        schema: container.schema,
+        onSubmit: (data) async {
+          Dio dio = Dio();
+          if (container.url != null) {
+            switch (container.method) {
+              case "POST":
+                await dio.post(container.url, data: data);
+                break;
+              case "PATCH":
+                await dio.patch(container.url, data: data);
+                break;
+            }
+          }
+        },
       ),
     );
   }

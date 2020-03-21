@@ -37,7 +37,7 @@ class JSONConverter implements Converter {
     List<Container> containers = [];
 
     for (var j in containerJSON) {
-      var blocks = this._convertBlock(j['blocks']);
+      var blocks = this._convertBlock(j['blocks'] ?? []);
       var container = Container.fromJSON(j);
       switch (container.types) {
         case ContainerTypes.container:
@@ -51,6 +51,9 @@ class JSONConverter implements Converter {
           double width = j['width'];
           containers.add(
               StoryContainer(children: blocks, width: width, height: height));
+          break;
+        case ContainerTypes.form:
+          containers.add(FormContainer.fromJSON(j));
           break;
       }
     }
