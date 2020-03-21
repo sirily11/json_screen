@@ -66,7 +66,7 @@ class JSONConverter implements Converter {
         case BlockTypes.text:
           blocks.add(TextBlock.fromJSON(j));
           // add new line if end with \n
-          if (block.content.endsWith("\n")) {
+          if (block.content?.endsWith("\n") ?? false) {
             blocks.add(NewLineBlock());
           }
           break;

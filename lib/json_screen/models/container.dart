@@ -21,7 +21,7 @@ class Container<T extends Block> {
   }
 
   factory Container.copyWith({List<T> children}) =>
-      Container(children: children);
+      Container(children: children, types: ContainerTypes.container);
 
   toJSON() {
     return {

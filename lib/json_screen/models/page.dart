@@ -8,7 +8,11 @@ class Page<T extends Container> {
   /// Containers within the page
   List<T> containers = [];
 
-  Page({this.containers, this.types});
+  Page({this.containers, this.types}) {
+    if (this.types == null) {
+      this.types = PageTypes.page;
+    }
+  }
 
   factory Page.fromJSON(Map<String, dynamic> json) {
     PageTypes t = PageTypes.values.firstWhere(
@@ -21,7 +25,7 @@ class Page<T extends Container> {
 
   toJSON() {
     return {
-      "types": types.toString().replaceFirst("pageTypes", ""),
+      "types": types.toString().replaceFirst("PageTypes.", ""),
       "containers": containers.map((e) => e.toJSON()).toList()
     };
   }

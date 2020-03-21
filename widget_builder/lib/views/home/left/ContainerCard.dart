@@ -39,6 +39,7 @@ class ContainerCard extends StatelessWidget {
         .map<Widget>(
           (e) => BlockCard(
             block: e,
+            container: container,
           ),
         )
         .toList();

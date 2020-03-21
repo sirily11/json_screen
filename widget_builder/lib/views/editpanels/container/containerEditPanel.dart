@@ -35,6 +35,7 @@ class ContainerEditPanel extends StatelessWidget {
               onChanged: (v) {
                 var newContainer = updateContainer(v);
                 provider.updateContainer(newContainer, container);
+                print(newContainer.types);
               },
               items: c.ContainerTypes.values
                   .map(

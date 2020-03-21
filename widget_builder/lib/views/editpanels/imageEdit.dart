@@ -43,6 +43,7 @@ class _BlockEditPanelState extends State<ImageEditPanel> {
                 decoration: InputDecoration(labelText: "Label"),
               ),
             ),
+            Spacer(),
             Expanded(
               flex: 7,
               child: TextFormField(

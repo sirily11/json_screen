@@ -12,6 +12,20 @@ class TableView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool found = tableBlock.rows.firstWhere(
+            (element) => element.length != tableBlock.columns.length,
+            orElse: () => null) !=
+        null;
+
+    if (found) {
+      return Center(
+        child: Text(
+          "Column length not equals to row's length",
+          style: TextStyle(color: Colors.red, fontSize: 20),
+        ),
+      );
+    }
+
     return Container(
       width: MediaQuery.of(context).size.width,
       child: Column(

@@ -20,7 +20,7 @@ class HeaderView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      block.content,
+      "${block.content}",
       style: _headerStyle(context),
     );
   }

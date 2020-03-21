@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:json_screen/json_screen.dart';
 import 'package:json_screen/json_screen/models/container.dart' as c;
 
 typedef void OnContainerSelect(c.Container container);

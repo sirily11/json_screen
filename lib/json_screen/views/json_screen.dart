@@ -8,7 +8,7 @@ typedef Future<void> OnLinkTap(String link);
 typedef Future<void> OnImageTap(String imageSrc);
 
 class JsonScreen extends StatefulWidget {
-  final List<Map<String, dynamic>> json;
+  final List<dynamic> json;
   final List<Page> pages;
   final OnLinkTap onLinkTap;
   final OnImageTap onImageTap;
@@ -26,6 +26,7 @@ class _JsonScreenState extends State<JsonScreen> {
   @override
   void initState() {
     if (widget.json != null) {
+      print("convert json");
       JSONConverter converter = JSONConverter(json: widget.json);
       this.pages = converter.convert();
     } else if (widget.pages != null) {
@@ -78,7 +79,7 @@ class _JsonScreenState extends State<JsonScreen> {
           pages.length > 0
               ? Positioned(
                   bottom: 30,
-                  width: MediaQuery.of(context).size.width,
+                  width: cons.maxWidth,
                   child: Align(
                     alignment: Alignment.center,
                     child: CirclePageIndicator(

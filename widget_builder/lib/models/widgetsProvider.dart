@@ -47,11 +47,12 @@ class WidgetProvider with ChangeNotifier {
       for (var container in page.containers) {
         if (container == oldContainer) {
           page.containers[index] = newContainer;
+          notifyListeners();
+          return;
         }
         index += 1;
       }
     }
-    notifyListeners();
   }
 
   void addBlock(Block block, c.Container container) {
@@ -71,12 +72,13 @@ class WidgetProvider with ChangeNotifier {
         for (var block in container.children) {
           if (block == oldBlock) {
             container.children[index] = newBlock;
+            notifyListeners();
+            return;
           }
           index += 1;
         }
       }
     }
-    notifyListeners();
   }
 
   void moveBlockUp(Block block) {

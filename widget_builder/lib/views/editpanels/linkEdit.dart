@@ -5,7 +5,7 @@ import 'package:widget_builder/models/widgetsProvider.dart';
 import 'package:widget_builder/views/editpanels/blockTypesSelector.dart';
 
 class LinkEditPanel extends StatefulWidget {
-  final ImageBlock block;
+  final LinkBlock block;
 
   LinkEditPanel({@required this.block});
 
@@ -43,6 +43,7 @@ class _BlockEditPanelState extends State<LinkEditPanel> {
                 decoration: InputDecoration(labelText: "Content"),
               ),
             ),
+            Spacer(),
             Expanded(
               flex: 7,
               child: TextFormField(

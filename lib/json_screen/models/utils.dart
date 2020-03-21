@@ -74,7 +74,7 @@ Widget renderPage(Page page, BuildContext context, OnLinkTap onlinkTap,
 StoryItem renderStoryBlock(Block block, BuildContext context) {
   if (block is ImageBlock) {
     return StoryItem.inlineImage(
-      NetworkImage(block.data, scale: 1),
+      NetworkImage(block.data ?? "", scale: 1),
       caption: Text(block.content),
     );
   }

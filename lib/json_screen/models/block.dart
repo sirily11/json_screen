@@ -42,7 +42,7 @@ class Block {
 
   factory Block.fromJSON(Map<String, dynamic> json) {
     BlockTypes t = BlockTypes.values.firstWhere(
-      (element) => element.toString() == "BlockTypes." + json['types'],
+      (element) => element.toString() == "BlockTypes.${json['types']}",
       orElse: () => null,
     );
 
@@ -87,7 +87,7 @@ class TextBlock extends Block {
   }
 
   factory TextBlock.fromJSON(Map<String, dynamic> json) {
-    if ((json['content'] as String).endsWith("\n")) {
+    if ((json['content'] as String)?.endsWith("\n") ?? false) {
       String content = json['content'];
 
       return TextBlock(content: content.substring(0, content.length - 1));
@@ -152,6 +152,9 @@ class ListBlock extends Block {
       : super(content: content) {
     if (this.children == null) {
       this.children = [];
+    }
+    if (this.styles == null) {
+      this.styles = ListStyles.unordered;
     }
   }
 

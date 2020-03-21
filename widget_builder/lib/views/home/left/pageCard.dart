@@ -14,6 +14,7 @@ class PageCardList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+        shrinkWrap: true,
         itemCount: pages.length,
         itemBuilder: (c, i) {
           if (i >= pages.length) {
@@ -83,6 +84,17 @@ class PageCard extends StatelessWidget {
                       provider.addPage(Page(containers: []));
                     } else if (v == 3) {
                       provider.removePage(page);
+                    } else if (v == 4) {
+                      showDialog(
+                        context: context,
+                        builder: (c) => ContainerSelector(
+                          title: "Delete container",
+                          containers: page.containers,
+                          select: (container) {
+                            provider.removeContainer(container, page);
+                          },
+                        ),
+                      );
                     }
                   },
                   icon: Icon(Icons.more_vert),
@@ -103,6 +115,10 @@ class PageCard extends StatelessWidget {
                       PopupMenuItem(
                         value: 3,
                         child: Text("Delete Page"),
+                      ),
+                      PopupMenuItem(
+                        value: 4,
+                        child: Text("Delete Container"),
                       )
                     ];
                   },

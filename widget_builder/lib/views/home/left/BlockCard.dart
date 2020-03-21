@@ -4,20 +4,25 @@ import 'package:provider/provider.dart';
 import 'package:widget_builder/models/widgetsProvider.dart';
 import 'package:widget_builder/views/editpanels/blockEdit.dart';
 import 'package:widget_builder/views/editpanels/headerEdit.dart';
+import 'package:widget_builder/views/editpanels/imageEdit.dart';
 import 'package:widget_builder/views/editpanels/linkEdit.dart';
+import 'package:widget_builder/views/editpanels/listEdit.dart';
 import 'package:widget_builder/views/editpanels/quoteEdit.dart';
+import 'package:json_screen/json_screen/models/container.dart' as c;
+import 'package:widget_builder/views/editpanels/tableEdit.dart';
 
 class BlockCard extends StatelessWidget {
   final Block block;
+  final c.Container container;
 
-  BlockCard({@required this.block});
+  BlockCard({@required this.block, @required this.container});
 
   Widget _renderBlockEdit() {
     if (block is HeaderBlock) {
       return HeaderEditPanel(
         block: block,
       );
-    } else if (block is LinkEditPanel) {
+    } else if (block is LinkBlock) {
       return LinkEditPanel(
         block: block,
       );
@@ -26,7 +31,15 @@ class BlockCard extends StatelessWidget {
         block: block,
       );
     } else if (block is ImageBlock) {
-      return QuoteEditPanel(
+      return ImageEditPanel(
+        block: block,
+      );
+    } else if (block is ListBlock) {
+      return ListEditPanel(
+        block: block,
+      );
+    } else if (block is TableBlock) {
+      return TableEditPanel(
         block: block,
       );
     }
@@ -43,7 +56,10 @@ class BlockCard extends StatelessWidget {
         left: 20,
       ),
       child: ExpansionTile(
-        title: Text(block.types.toString()),
+        title: Text(
+          "${block.types.toString()}",
+        ),
+        subtitle: Text("${block.content}"),
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(bottom: 8, left: 20, right: 40),
@@ -75,6 +91,18 @@ class BlockCard extends StatelessWidget {
                   ),
                 )
               ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                onPressed: () {
+                  provider.removeBlock(block, container);
+                },
+                icon: Icon(Icons.delete),
+              ),
             ),
           )
         ],
