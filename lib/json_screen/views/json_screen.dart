@@ -9,10 +9,11 @@ typedef Future<void> OnImageTap(String imageSrc);
 
 class JsonScreen extends StatefulWidget {
   final List<Map<String, dynamic>> json;
+  final List<Page> pages;
   final OnLinkTap onLinkTap;
   final OnImageTap onImageTap;
 
-  JsonScreen({@required this.json, this.onImageTap, this.onLinkTap});
+  JsonScreen({this.json, this.onImageTap, this.onLinkTap, this.pages});
 
   @override
   _JsonScreenState createState() => _JsonScreenState();
@@ -24,18 +25,29 @@ class _JsonScreenState extends State<JsonScreen> {
 
   @override
   void initState() {
-    JSONConverter converter = JSONConverter(json: widget.json);
-    this.pages = converter.convert();
+    if (widget.json != null) {
+      JSONConverter converter = JSONConverter(json: widget.json);
+      this.pages = converter.convert();
+    } else if (widget.pages != null) {
+      this.pages = widget.pages;
+    } else {
+      throw Exception("JSON or Pages must be provided");
+    }
+
     super.initState();
   }
 
   @override
   void didUpdateWidget(JsonScreen oldWidget) {
-    if (oldWidget.json != widget.json) {
+    if (widget.json != null && oldWidget.json != widget.json) {
       JSONConverter converter = JSONConverter(json: widget.json);
 
       setState(() {
         this.pages = converter.convert();
+      });
+    } else if (widget.pages != null && oldWidget.json != widget.json) {
+      setState(() {
+        this.pages = widget.pages;
       });
     }
     super.didUpdateWidget(oldWidget);

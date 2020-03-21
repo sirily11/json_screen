@@ -16,9 +16,10 @@ import 'package:story_view/story_view.dart';
 /// render List of blocks
 Widget renderBlock(Block block, OnLinkTap onlinkTap, OnImageTap onImageTap) {
   if (block is ImageBlock) {
-    return ImageView(
-      block: block,
-      onImageTap: onImageTap
+    return ImageView(block: block, onImageTap: onImageTap);
+  } else if (block is NewLineBlock) {
+    return TextView(
+      block: TextBlock(content: "\n"),
     );
   } else if (block is TextBlock) {
     return TextView(
@@ -44,8 +45,11 @@ Widget renderBlock(Block block, OnLinkTap onlinkTap, OnImageTap onImageTap) {
       onLinkTap: onlinkTap,
       onImageTap: onImageTap,
     );
-  } else if(block is LinkBlock){
-    return LinkView(block: block, onLinkTap: onlinkTap,);
+  } else if (block is LinkBlock) {
+    return LinkView(
+      block: block,
+      onLinkTap: onlinkTap,
+    );
   }
   return Container();
 }

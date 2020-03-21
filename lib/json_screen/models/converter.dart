@@ -105,6 +105,9 @@ class JSONConverter implements Converter {
         case BlockTypes.web:
           blocks.add(WebViewBlock.fromJSON(j));
           break;
+        case BlockTypes.newline:
+          blocks.add(NewLineBlock());
+          break;
       }
     }
 

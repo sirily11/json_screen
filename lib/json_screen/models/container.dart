@@ -20,6 +20,9 @@ class Container<T extends Block> {
     return Container(types: t);
   }
 
+  factory Container.copyWith({List<T> children}) =>
+      Container(children: children);
+
   toJSON() {
     return {
       "types": types.toString().replaceFirst("ContainerTypes.", ""),
@@ -33,6 +36,9 @@ class HorizontalCarousel<T extends Block> extends Container {
   ContainerTypes types = ContainerTypes.horizontal;
   HorizontalCarousel({List<T> children, ContainerTypes types})
       : super(children: children, types: types);
+
+  factory HorizontalCarousel.copyWith({List<T> children}) =>
+      HorizontalCarousel(children: children);
 }
 
 class StoryContainer<T extends Block> extends Container {
@@ -42,4 +48,7 @@ class StoryContainer<T extends Block> extends Container {
   StoryContainer(
       {List<T> children, ContainerTypes types, this.height = 300, this.width})
       : super(children: children, types: types);
+
+  factory StoryContainer.copyWith({List<T> children}) =>
+      StoryContainer(children: children);
 }

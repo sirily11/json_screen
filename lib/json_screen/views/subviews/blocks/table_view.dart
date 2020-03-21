@@ -21,25 +21,27 @@ class TableView extends StatelessWidget {
             style: Theme.of(context).textTheme.headline6,
           ),
           Center(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: tableBlock.columns
-                    .map((e) => DataColumn(
-                        label: renderBlock(e, onLinkTap, onImageTap)))
-                    .toList(),
-                rows: tableBlock.rows
-                    .map(
-                      (e) => DataRow(
-                        cells: e
-                            .map((el) => DataCell(
-                                renderBlock(el, onLinkTap, onImageTap)))
-                            .toList(),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
+            child: tableBlock.columns.isNotEmpty
+                ? SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      columns: tableBlock.columns
+                          .map((e) => DataColumn(
+                              label: renderBlock(e, onLinkTap, onImageTap)))
+                          .toList(),
+                      rows: tableBlock.rows
+                          .map(
+                            (e) => DataRow(
+                              cells: e
+                                  .map((el) => DataCell(
+                                      renderBlock(el, onLinkTap, onImageTap)))
+                                  .toList(),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  )
+                : Text("Column should not be empty"),
           ),
         ],
       ),

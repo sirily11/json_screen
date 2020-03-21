@@ -22,12 +22,16 @@ enum BlockTypes {
   /// link component
   link,
 
-  web
+  web,
+
+  newline
 }
 
 enum ListStyles { unordered, ordered }
 
 class Block {
+  String id = DateTime.now().toIso8601String();
+
   /// Type of the block
   BlockTypes types;
 
@@ -78,6 +82,10 @@ class TextBlock extends Block {
 
   TextBlock({this.content}) : super(content: content);
 
+  factory TextBlock.copyWith({String content}) {
+    return TextBlock(content: content);
+  }
+
   factory TextBlock.fromJSON(Map<String, dynamic> json) {
     if ((json['content'] as String).endsWith("\n")) {
       String content = json['content'];
@@ -99,6 +107,10 @@ class ImageBlock extends DataBlock {
 
   ImageBlock({this.content, String data}) : super(content: content, data: data);
 
+  factory ImageBlock.copyWith({String content, String data}) {
+    return ImageBlock(content: content, data: data);
+  }
+
   factory ImageBlock.fromJSON(Map<String, dynamic> json) {
     return ImageBlock(content: json['content'], data: json['data']);
   }
@@ -114,7 +126,11 @@ class HeaderBlock extends Block {
   /// Header level. For example header 1
   int level;
 
-  HeaderBlock({this.level, this.content}) : super(content: content);
+  HeaderBlock({this.level = 3, this.content}) : super(content: content);
+
+  factory HeaderBlock.copyWith({String content}) {
+    return HeaderBlock(content: content);
+  }
 
   factory HeaderBlock.fromJSON(Map<String, dynamic> json) {
     return HeaderBlock(content: json['content'], level: json['level']);
@@ -133,7 +149,15 @@ class ListBlock extends Block {
   List<Block> children = [];
 
   ListBlock({this.content, this.children, this.styles})
-      : super(content: content);
+      : super(content: content) {
+    if (this.children == null) {
+      this.children = [];
+    }
+  }
+
+  factory ListBlock.copyWith({String content, ListStyles styles}) {
+    return ListBlock(content: content, styles: styles);
+  }
 
   static ListStyles getStyles(Map<String, dynamic> json) {
     ListStyles s = ListStyles.values.firstWhere(
@@ -167,12 +191,18 @@ class LinkBlock extends DataBlock {
 
   LinkBlock({this.content, this.data}) : super(data: data, content: content);
 
+  factory LinkBlock.copyWith({String content, String data}) {
+    return LinkBlock(content: content, data: data);
+  }
+
   factory LinkBlock.fromJSON(Map<String, dynamic> json) {
     return LinkBlock(content: json['content'], data: json['data']);
   }
 }
 
-class NewLineBlock extends TextBlock {
+class NewLineBlock extends Block {
+  @override
+  BlockTypes types = BlockTypes.newline;
   @override
   String content = "\n";
 }
@@ -182,6 +212,10 @@ class QuoteBlock extends Block {
   BlockTypes types = BlockTypes.quote;
 
   QuoteBlock({String content}) : super(content: content);
+
+  factory QuoteBlock.copyWith({String content}) {
+    return QuoteBlock(content: content);
+  }
 
   factory QuoteBlock.fromJSON(Map<String, dynamic> json) {
     return QuoteBlock(content: json['content']);
@@ -199,7 +233,18 @@ class TableBlock extends Block {
   List<List<Block>> rows = [];
 
   TableBlock({String content, this.columns, this.rows})
-      : super(content: content);
+      : super(content: content) {
+    if (this.columns == null) {
+      this.columns = [];
+    }
+    if (this.rows == null) {
+      this.rows = [];
+    }
+  }
+
+  factory TableBlock.copyWith({String content}) {
+    return TableBlock(content: content, columns: [], rows: []);
+  }
 
   toJSON() {
     return {
