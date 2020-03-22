@@ -163,6 +163,7 @@ dynamic renderContainer(c.Container container, BuildContext context,
     return Timeline(
       shrinkWrap: true,
       position: TimelinePosition.Left,
+      lineColor: Theme.of(context).textTheme.bodyText1.color,
       children: container.children
           .map(
             (e) => TimelineModel(
