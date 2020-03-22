@@ -14,6 +14,8 @@ import 'package:json_screen/json_screen/views/subviews/blocks/table_view.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/text_view.dart';
 import 'package:json_screen/json_screen/models/container.dart' as c;
 import 'package:story_view/story_view.dart';
+import 'package:timeline_list/timeline.dart';
+import 'package:timeline_list/timeline_model.dart';
 
 /// render List of blocks
 Widget renderBlock(Block block, OnLinkTap onlinkTap, OnImageTap onImageTap) {
@@ -61,15 +63,14 @@ Widget renderPage(Page page, BuildContext context, OnLinkTap onlinkTap,
     OnImageTap onImageTap) {
   return RichText(
     text: TextSpan(
-      children: page.containers.map((e) {
-        if (e is c.HorizontalCarousel ||
-            e is c.StoryContainer ||
-            e is c.FormContainer) {
+      children: page.containers.map<InlineSpan>((e) {
+        var child = renderContainer(e, context, onlinkTap, onImageTap);
+        if (child is Widget) {
           return WidgetSpan(
-            child: renderContainer(e, context, onlinkTap, onImageTap) as Widget,
+            child: child,
           );
         }
-        return renderContainer(e, context, onlinkTap, onImageTap) as InlineSpan;
+        return child;
       }).toList(),
     ),
   );
@@ -155,6 +156,22 @@ dynamic renderContainer(c.Container container, BuildContext context,
             }
           }
         },
+      ),
+    );
+  } else if (container is c.TimelineContainer) {
+    return ConstrainedBox(
+      constraints:
+          BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+      child: Timeline(
+        position: TimelinePosition.Left,
+        children: container.children
+            .map(
+              (e) => TimelineModel(
+                renderBlock(e, (link) => null, (imageSrc) => null),
+                leading: Text("${e.label}"),
+              ),
+            )
+            .toList(),
       ),
     );
   }

@@ -19,7 +19,9 @@ class ContainerEditPanel extends StatelessWidget {
       case c.ContainerTypes.story:
         return c.StoryContainer.copyWith(children: container.children);
       case c.ContainerTypes.form:
-        return c.FormContainer();
+        return c.FormContainer(children: container.children);
+      case c.ContainerTypes.timeline:
+        return c.TimelineContainer.copyWith(children: container.children);
     }
     return c.Container.copyWith(children: container.children);
   }

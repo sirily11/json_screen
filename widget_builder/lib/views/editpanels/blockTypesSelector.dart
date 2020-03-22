@@ -16,23 +16,23 @@ class BlockTypesSelector extends StatelessWidget {
   Block getNewBlock(BlockTypes types, Block block) {
     switch (types) {
       case BlockTypes.text:
-        return TextBlock.copyWith(content: block.content);
+        return TextBlock.copyWith(content: block.content, label: block.label);
       case BlockTypes.image:
-        return ImageBlock.copyWith(content: block.content);
+        return ImageBlock.copyWith(content: block.content, label: block.label);
       case BlockTypes.quote:
-        return QuoteBlock.copyWith(content: block.content);
+        return QuoteBlock.copyWith(content: block.content, label: block.label);
       case BlockTypes.table:
-        return TableBlock.copyWith(content: block.content);
+        return TableBlock.copyWith(content: block.content, label: block.label);
       case BlockTypes.list:
-        return ListBlock.copyWith(content: block.content);
+        return ListBlock.copyWith(content: block.content, label: block.label);
       case BlockTypes.header:
-        return HeaderBlock.copyWith(content: block.content);
+        return HeaderBlock.copyWith(content: block.content, label: block.label);
       case BlockTypes.link:
-        return LinkBlock.copyWith(content: block.content);
+        return LinkBlock.copyWith(content: block.content, label: block.label);
       case BlockTypes.newline:
         return NewLineBlock();
       default:
-        return TextBlock.copyWith(content: block.content);
+        return TextBlock.copyWith(content: block.content, label: block.label);
         break;
     }
   }

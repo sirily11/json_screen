@@ -28,13 +28,15 @@ class _HomePageState extends State<HomePage> {
     WidgetProvider provider = Provider.of(context);
     var parsedJSON;
 
-    try {
-      parsedJSON = JsonDecoder().convert(json);
-      if (parsedJSON is List) {
-      } else {
-        parsedJSON = null;
-      }
-    } catch (err) {}
+    if (json.isNotEmpty) {
+      try {
+        parsedJSON = JsonDecoder().convert(json);
+        if (parsedJSON is List) {
+        } else {
+          parsedJSON = null;
+        }
+      } catch (err) {}
+    }
 
     return DefaultTabController(
       length: 2,

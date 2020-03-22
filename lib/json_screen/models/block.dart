@@ -32,13 +32,16 @@ enum ListStyles { unordered, ordered }
 class Block {
   String id = DateTime.now().toIso8601String();
 
+  /// optional label. Use this for timeline container
+  String label;
+
   /// Type of the block
   BlockTypes types;
 
   /// Content of the block
   String content;
 
-  Block({this.types, this.content});
+  Block({this.types, this.content, this.label});
 
   factory Block.fromJSON(Map<String, dynamic> json) {
     BlockTypes t = BlockTypes.values.firstWhere(
@@ -52,23 +55,29 @@ class Block {
   Map<String, dynamic> toJSON() {
     return {
       "content": content,
-      "types": types.toString().replaceFirst("BlockTypes.", "")
+      "types": types.toString().replaceFirst("BlockTypes.", ""),
+      "label": label
     };
   }
 }
 
 class DataBlock extends Block {
+  @override
+  String label;
+
   /// Block's data
   String data;
 
-  DataBlock({this.data, String content}) : super(content: content);
+  DataBlock({this.data, String content, this.label})
+      : super(content: content, label: label);
 
   @override
   Map<String, dynamic> toJSON() {
     return {
       "content": content,
       "types": types.toString().replaceFirst("BlockTypes.", ""),
-      "data": data
+      "data": data,
+      "label": label
     };
   }
 }
@@ -80,20 +89,26 @@ class TextBlock extends Block {
   @override
   BlockTypes types = BlockTypes.text;
 
-  TextBlock({this.content}) : super(content: content);
+  @override
+  String label;
 
-  factory TextBlock.copyWith({String content}) {
-    return TextBlock(content: content);
+  TextBlock({this.content, this.label}) : super(content: content, label: label);
+
+  factory TextBlock.copyWith({String content, String label}) {
+    return TextBlock(content: content, label: label);
   }
 
   factory TextBlock.fromJSON(Map<String, dynamic> json) {
     if ((json['content'] as String)?.endsWith("\n") ?? false) {
       String content = json['content'];
 
-      return TextBlock(content: content.substring(0, content.length - 1));
+      return TextBlock(
+          content: content.substring(0, content.length - 1),
+          label: json['label']);
     }
 
-    return TextBlock(content: (json['content'] as String));
+    return TextBlock(
+        content: (json['content'] as String), label: json['label']);
   }
 }
 
@@ -105,14 +120,19 @@ class ImageBlock extends DataBlock {
   @override
   BlockTypes types = BlockTypes.image;
 
-  ImageBlock({this.content, String data}) : super(content: content, data: data);
+  @override
+  String label;
 
-  factory ImageBlock.copyWith({String content, String data}) {
-    return ImageBlock(content: content, data: data);
+  ImageBlock({this.content, String data, this.label})
+      : super(content: content, data: data, label: label);
+
+  factory ImageBlock.copyWith({String content, String data, String label}) {
+    return ImageBlock(content: content, data: data, label: label);
   }
 
   factory ImageBlock.fromJSON(Map<String, dynamic> json) {
-    return ImageBlock(content: json['content'], data: json['data']);
+    return ImageBlock(
+        content: json['content'], data: json['data'], label: json['label']);
   }
 }
 
@@ -123,17 +143,22 @@ class HeaderBlock extends Block {
   @override
   BlockTypes types = BlockTypes.header;
 
+  @override
+  String label;
+
   /// Header level. For example header 1
   int level;
 
-  HeaderBlock({this.level = 3, this.content}) : super(content: content);
+  HeaderBlock({this.level = 3, this.content, this.label})
+      : super(content: content, label: label);
 
-  factory HeaderBlock.copyWith({String content}) {
-    return HeaderBlock(content: content);
+  factory HeaderBlock.copyWith({String content, String label}) {
+    return HeaderBlock(content: content, label: label);
   }
 
   factory HeaderBlock.fromJSON(Map<String, dynamic> json) {
-    return HeaderBlock(content: json['content'], level: json['level']);
+    return HeaderBlock(
+        content: json['content'], level: json['level'], label: json['label']);
   }
 }
 
@@ -144,12 +169,15 @@ class ListBlock extends Block {
   @override
   BlockTypes types = BlockTypes.list;
 
+  @override
+  String label;
+
   ListStyles styles = ListStyles.unordered;
 
   List<Block> children = [];
 
-  ListBlock({this.content, this.children, this.styles})
-      : super(content: content) {
+  ListBlock({this.content, this.children, this.styles, this.label})
+      : super(content: content, label: label) {
     if (this.children == null) {
       this.children = [];
     }
@@ -158,8 +186,9 @@ class ListBlock extends Block {
     }
   }
 
-  factory ListBlock.copyWith({String content, ListStyles styles}) {
-    return ListBlock(content: content, styles: styles);
+  factory ListBlock.copyWith(
+      {String content, ListStyles styles, String label}) {
+    return ListBlock(content: content, styles: styles, label: label);
   }
 
   static ListStyles getStyles(Map<String, dynamic> json) {
@@ -175,8 +204,9 @@ class ListBlock extends Block {
     return {
       "content": content,
       "types": types.toString().replaceFirst("BlockTypes.", ""),
-      "children": children.map((e) => e.toJSON()),
-      "styles": styles.toString().replaceFirst("ListStyles.", "")
+      "children": children.map((e) => e.toJSON()).toList(),
+      "styles": styles.toString().replaceFirst("ListStyles.", ""),
+      "label": label
     };
   }
 }
@@ -188,18 +218,23 @@ class LinkBlock extends DataBlock {
   @override
   BlockTypes types = BlockTypes.link;
 
+  @override
+  String label;
+
   /// Link data
   @override
   String data;
 
-  LinkBlock({this.content, this.data}) : super(data: data, content: content);
+  LinkBlock({this.content, this.data, this.label})
+      : super(data: data, content: content, label: label);
 
-  factory LinkBlock.copyWith({String content, String data}) {
-    return LinkBlock(content: content, data: data);
+  factory LinkBlock.copyWith({String content, String data, String label}) {
+    return LinkBlock(content: content, data: data, label: label);
   }
 
   factory LinkBlock.fromJSON(Map<String, dynamic> json) {
-    return LinkBlock(content: json['content'], data: json['data']);
+    return LinkBlock(
+        content: json['content'], data: json['data'], label: json['label']);
   }
 }
 
@@ -214,14 +249,18 @@ class QuoteBlock extends Block {
   @override
   BlockTypes types = BlockTypes.quote;
 
-  QuoteBlock({String content}) : super(content: content);
+  @override
+  String label;
 
-  factory QuoteBlock.copyWith({String content}) {
-    return QuoteBlock(content: content);
+  QuoteBlock({String content, this.label})
+      : super(content: content, label: label);
+
+  factory QuoteBlock.copyWith({String content, String label}) {
+    return QuoteBlock(content: content, label: label);
   }
 
   factory QuoteBlock.fromJSON(Map<String, dynamic> json) {
-    return QuoteBlock(content: json['content']);
+    return QuoteBlock(content: json['content'], label: json['label']);
   }
 }
 
@@ -229,14 +268,17 @@ class TableBlock extends Block {
   @override
   BlockTypes types = BlockTypes.table;
 
+  @override
+  String label;
+
   /// Header
   List<Block> columns = [];
 
   /// rows
   List<List<Block>> rows = [];
 
-  TableBlock({String content, this.columns, this.rows})
-      : super(content: content) {
+  TableBlock({String content, this.columns, this.rows, this.label})
+      : super(content: content, label: label) {
     if (this.columns == null) {
       this.columns = [];
     }
@@ -245,15 +287,16 @@ class TableBlock extends Block {
     }
   }
 
-  factory TableBlock.copyWith({String content}) {
-    return TableBlock(content: content, columns: [], rows: []);
+  factory TableBlock.copyWith({String content, String label}) {
+    return TableBlock(content: content, columns: [], rows: [], label: label);
   }
 
   toJSON() {
     return {
       "content": content,
       "columns": columns.map((e) => e.toJSON()).toList(),
-      "rows": rows.map((e) => e.map((el) => el.toJSON()).toList()).toList()
+      "rows": rows.map((e) => e.map((el) => el.toJSON()).toList()).toList(),
+      "label": label
     };
   }
 }

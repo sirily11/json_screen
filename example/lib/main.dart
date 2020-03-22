@@ -195,6 +195,20 @@ class MyApp extends StatelessWidget {
                     }
                   ]
                 },
+                {
+                  "types": "timeline",
+                  "blocks": [
+                    {"types": "text", "content": "timeline 1", "label": "abc"},
+                    {"types": "text", "content": "timeline 1", "label": "abc"},
+                    {
+                      "types": "image",
+                      "content": "google",
+                      "label": "google",
+                      "data":
+                          "https://www.google.com/logos/doodles/2020/spring-2020-northern-hemisphere-6753651837108323-l.png"
+                    },
+                  ]
+                },
               ]
             }
           ],

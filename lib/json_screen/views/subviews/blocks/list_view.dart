@@ -27,7 +27,7 @@ class ListViewView extends StatelessWidget {
       text: TextSpan(
         style: TextStyle(color: Colors.black),
         children: [
-          TextSpan(text: block.content != null ? "$index. " : ""),
+          TextSpan(text: block.content != null ? "${index + 1}. " : ""),
           WidgetSpan(child: renderBlock(block, onLinkTap, onImageTap))
         ],
       ),

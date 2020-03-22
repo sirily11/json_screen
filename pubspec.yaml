@@ -16,6 +16,9 @@ dependencies:
   story_view: ^0.11.4
   webview_flutter: ^0.3.19+9
   json_schema_form: ^0.8.5
+  timeline_list:
+    git:
+      url: https://github.com/sirily11/timeline_list.git
   dio: ^3.0.9
 
 dev_dependencies:

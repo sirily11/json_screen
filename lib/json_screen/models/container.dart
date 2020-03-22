@@ -1,6 +1,6 @@
 import 'package:json_screen/json_screen.dart';
 
-enum ContainerTypes { container, horizontal, story, form }
+enum ContainerTypes { container, horizontal, story, form, timeline }
 
 /// Base Container
 class Container<T extends Block> {
@@ -41,6 +41,16 @@ class HorizontalCarousel<T extends Block> extends Container {
       HorizontalCarousel(children: children);
 }
 
+/// Timeline container
+class TimelineContainer<T extends Block> extends Container {
+  ContainerTypes types = ContainerTypes.timeline;
+  TimelineContainer({List<T> children, ContainerTypes types})
+      : super(children: children, types: types);
+
+  factory TimelineContainer.copyWith({List<T> children}) =>
+      TimelineContainer(children: children);
+}
+
 class StoryContainer<T extends Block> extends Container {
   ContainerTypes types = ContainerTypes.story;
   double height;
@@ -55,6 +65,7 @@ class StoryContainer<T extends Block> extends Container {
 
 class FormContainer extends Container {
   ContainerTypes types = ContainerTypes.form;
+  List<Block> children = [];
 
   /// JSON Schema for form
   List<dynamic> schema;
@@ -74,8 +85,9 @@ class FormContainer extends Container {
       this.url,
       this.method,
       this.height = 300.0,
-      this.width = 300.0})
-      : super(children: []);
+      this.width = 300.0,
+      this.children})
+      : super(children: children);
 
   factory FormContainer.fromJSON(Map<String, dynamic> json) => FormContainer(
       method: json['method'],

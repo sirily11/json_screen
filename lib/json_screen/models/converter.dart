@@ -55,6 +55,10 @@ class JSONConverter implements Converter {
         case ContainerTypes.form:
           containers.add(FormContainer.fromJSON(j));
           break;
+        case ContainerTypes.timeline:
+          containers
+              .add(TimelineContainer(children: blocks, types: container.types));
+          break;
       }
     }
     return containers;

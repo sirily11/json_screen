@@ -59,6 +59,22 @@ class _BlockEditPanelState extends State<ImageEditPanel> {
           ],
         ),
         Row(
+          children: <Widget>[
+            Expanded(
+              flex: 3,
+              child: TextFormField(
+                initialValue: widget.block.label,
+                onChanged: (v) {
+                  WidgetProvider provider = Provider.of(context, listen: false);
+                  widget.block.label = v;
+                  provider.updateBlock(widget.block, widget.block);
+                },
+                decoration: InputDecoration(labelText: "Block Label"),
+              ),
+            ),
+          ],
+        ),
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text("Blcok Types"),
