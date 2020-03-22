@@ -209,6 +209,12 @@ class MyApp extends StatelessWidget {
                     },
                   ]
                 },
+                {
+                  "types": "container",
+                  "blocks": [
+                    {"types": "text", "content": "hello"}
+                  ]
+                }
               ]
             }
           ],

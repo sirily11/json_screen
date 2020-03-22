@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:widget_builder/models/widgetsProvider.dart';
 import 'package:widget_builder/views/home/left/pageCard.dart';
 import 'package:quill_delta/quill_delta.dart';
+import 'package:widget_builder/views/home/popup/addItemDialog.dart';
 import 'package:zefyr/zefyr.dart';
 
 class HomePage extends StatefulWidget {
@@ -41,6 +42,7 @@ class _HomePageState extends State<HomePage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        key: provider.key,
         appBar: AppBar(
           title: Text("Widget Builder - Use GUI ($useGUI)"),
           actions: <Widget>[
@@ -50,7 +52,23 @@ class _HomePageState extends State<HomePage> {
                   setState(() {
                     useGUI = v;
                   });
-                })
+                }),
+            IconButton(
+              tooltip: "Input json schema",
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (c) => AddItemWidget(
+                    title: "Import JSON",
+                    maxLines: 10,
+                    onTextSubmit: (t) {
+                      provider.loadPageFromString(t);
+                    },
+                  ),
+                );
+              },
+              icon: Icon(Icons.folder_open),
+            )
           ],
         ),
         body: Row(

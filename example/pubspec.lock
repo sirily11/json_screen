@@ -155,7 +155,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.5.4"
+    version: "0.5.5"
   matcher:
     dependency: transitive
     description:
@@ -357,6 +357,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.15"
+  timeline_list2:
+    dependency: transitive
+    description:
+      name: timeline_list2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   typed_data:
     dependency: transitive
     description:

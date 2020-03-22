@@ -7,3 +7,7 @@
 ## [0.5.4] 2020.3.20
 
 - Added timeline view
+
+## [0.5.5] 2020.3.20
+
+- Fixed bugs

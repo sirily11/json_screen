@@ -9,10 +9,12 @@ typedef void OnMultiTextSubmit(List<String> submitedValue);
 class AddItemWidget extends StatefulWidget {
   final String title;
   final OnTextSubmit onTextSubmit;
+  final int maxLines;
 
   const AddItemWidget({
     this.title,
     this.onTextSubmit,
+    this.maxLines = 1,
     Key key,
   }) : super(key: key);
 
@@ -30,6 +32,8 @@ class _AddItemWidgetState extends State<AddItemWidget> {
       content: Container(
         width: 300,
         child: TextFormField(
+          keyboardType: TextInputType.multiline,
+          maxLines: widget.maxLines,
           decoration: InputDecoration(labelText: "Content"),
           controller: controller,
         ),

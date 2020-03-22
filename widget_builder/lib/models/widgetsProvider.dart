@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:json_screen/json_screen.dart';
 import 'package:json_screen/json_screen/models/container.dart' as c;
+import 'package:json_screen/json_screen/models/converter.dart';
 
 class WidgetProvider with ChangeNotifier {
+  GlobalKey<ScaffoldState> key = GlobalKey();
   List<Page> pages = [
     Page(
       types: PageTypes.page,
@@ -16,6 +20,35 @@ class WidgetProvider with ChangeNotifier {
       ],
     )
   ];
+
+  void loadPageFromString(String json) {
+    try {
+      var parsed = JsonDecoder().convert(json);
+      if (parsed is List) {
+        var p = JSONConverter(json: parsed).convert();
+        this.pages = p;
+        key.currentState.showSnackBar(
+          SnackBar(
+            content: Text("Imported json"),
+          ),
+        );
+        notifyListeners();
+      } else {
+        key.currentState.showSnackBar(
+          SnackBar(
+            content: Text("Unable import json"),
+          ),
+        );
+      }
+    } catch (err) {
+      print(err);
+      key.currentState.showSnackBar(
+        SnackBar(
+          content: Text("Unable import json"),
+        ),
+      );
+    }
+  }
 
   void addPage(Page page) {
     this.pages.add(page);

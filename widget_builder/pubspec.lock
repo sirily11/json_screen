@@ -169,7 +169,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.5.0"
+    version: "0.5.5"
   matcher:
     dependency: transitive
     description:
@@ -392,15 +392,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.15"
-  timeline_list:
+  timeline_list2:
     dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "145932fe79eb63e010260c35039d6efc5196378d"
-      url: "https://github.com/sirily11/timeline_list.git"
-    source: git
-    version: "0.0.5"
+      name: timeline_list2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   typed_data:
     dependency: transitive
     description:
