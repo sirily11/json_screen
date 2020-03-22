@@ -343,15 +343,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.15"
-  timeline_list:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "145932fe79eb63e010260c35039d6efc5196378d"
-      url: "https://github.com/sirily11/timeline_list.git"
-    source: git
-    version: "0.0.5"
   typed_data:
     dependency: transitive
     description:

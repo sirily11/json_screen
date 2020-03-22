@@ -1,6 +1,6 @@
 name: json_screen
 description: A widget builder by using json
-version: 0.5.0
+version: 0.5.4
 author:
 homepage: https://github.com/sirily11/json_screen
 repository: https://github.com/sirily11/json_screen
@@ -16,9 +16,6 @@ dependencies:
   story_view: ^0.11.4
   webview_flutter: ^0.3.19+9
   json_schema_form: ^0.8.5
-  timeline_list:
-    git:
-      url: https://github.com/sirily11/timeline_list.git
   dio: ^3.0.9
 
 dev_dependencies:

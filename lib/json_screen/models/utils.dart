@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:json_schema_form/json_textform/JSONSchemaForm.dart';
 import 'package:json_screen/json_screen/models/block.dart';
 import 'package:json_screen/json_screen/models/page.dart';
+import 'package:json_screen/json_screen/timeline_list/lib/timeline.dart';
+import 'package:json_screen/json_screen/timeline_list/lib/timeline_model.dart';
 import 'package:json_screen/json_screen/views/json_screen.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/header_view.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/image_view.dart';
@@ -14,8 +16,6 @@ import 'package:json_screen/json_screen/views/subviews/blocks/table_view.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/text_view.dart';
 import 'package:json_screen/json_screen/models/container.dart' as c;
 import 'package:story_view/story_view.dart';
-import 'package:timeline_list/timeline.dart';
-import 'package:timeline_list/timeline_model.dart';
 
 /// render List of blocks
 Widget renderBlock(Block block, OnLinkTap onlinkTap, OnImageTap onImageTap) {
