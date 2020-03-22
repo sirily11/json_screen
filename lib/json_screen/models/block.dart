@@ -160,6 +160,11 @@ class HeaderBlock extends Block {
     return HeaderBlock(
         content: json['content'], level: json['level'], label: json['label']);
   }
+
+  @override
+  Map<String, dynamic> toJSON() {
+    return {"content": content, "level": level, "label": "label"};
+  }
 }
 
 class ListBlock extends Block {
