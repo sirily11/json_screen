@@ -85,6 +85,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.9"
+  file_chooser:
+    dependency: "direct main"
+    description:
+      path: "packages/file_chooser"
+      relative: true
+    source: path
+    version: "0.1.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -169,7 +176,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.5.5"
+    version: "0.5.5+1"
   matcher:
     dependency: transitive
     description:
@@ -177,6 +184,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.6"
+  menubar:
+    dependency: "direct main"
+    description:
+      path: "packages/menubar"
+      relative: true
+    source: path
+    version: "0.0.1"
   meta:
     dependency: transitive
     description:
@@ -191,13 +205,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.4"
-  notus:
-    dependency: transitive
-    description:
-      name: notus
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.5"
   page_view_indicators:
     dependency: transitive
     description:
@@ -289,13 +296,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.4"
-  quill_delta:
-    dependency: transitive
-    description:
-      name: quill_delta
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   quiver:
     dependency: transitive
     description:
@@ -303,13 +303,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
-  quiver_hashcode:
-    dependency: transitive
-    description:
-      name: quiver_hashcode
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   rxdart:
     dependency: transitive
     description:
@@ -406,34 +399,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.6"
-  url_launcher:
-    dependency: transitive
-    description:
-      name: url_launcher
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "5.4.2"
-  url_launcher_macos:
-    dependency: transitive
-    description:
-      name: url_launcher_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.1+4"
-  url_launcher_platform_interface:
-    dependency: transitive
-    description:
-      name: url_launcher_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.6"
-  url_launcher_web:
-    dependency: transitive
-    description:
-      name: url_launcher_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.1+1"
   uuid:
     dependency: transitive
     description:
@@ -483,15 +448,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.5.0"
-  zefyr:
-    dependency: "direct main"
-    description:
-      path: "packages/zefyr"
-      ref: HEAD
-      resolved-ref: "017ced2e2e8f29dbc0f1465c875c64ed748f008f"
-      url: "https://github.com/sirily11/zefyr.git"
-    source: git
-    version: "0.8.0"
 sdks:
   dart: ">=2.7.0 <3.0.0"
   flutter: ">=1.12.13+hotfix.5 <2.0.0"

@@ -12,7 +12,9 @@ class ImageView extends StatelessWidget {
     return InkWell(
         onTap: () async {
           if (onImageTap != null) {
-            await onImageTap(block.data);
+            await onImageTap(
+              block.data,
+            );
           }
         },
         child: Image.network(block.data ?? ""));

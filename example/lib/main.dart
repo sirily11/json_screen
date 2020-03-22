@@ -24,10 +24,10 @@ class MyApp extends StatelessWidget {
           title: Text("JSON Screen"),
         ),
         body: JsonScreen(
-          onImageTap: (string) {
+          onImageTap: (string, images) async {
             print(string);
           },
-          onLinkTap: (string) {
+          onLinkTap: (string) async {
             print(string);
           },
           json: [

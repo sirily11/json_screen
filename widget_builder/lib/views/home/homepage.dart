@@ -1,14 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:file_chooser/file_chooser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:json_screen/json_screen/views/json_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_builder/models/widgetsProvider.dart';
 import 'package:widget_builder/views/home/left/pageCard.dart';
-import 'package:quill_delta/quill_delta.dart';
 import 'package:widget_builder/views/home/popup/addItemDialog.dart';
-import 'package:zefyr/zefyr.dart';
+import 'package:menubar/menubar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -22,6 +23,34 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    setApplicationMenu(
+      [
+        Submenu(
+          label: "File",
+          children: [
+            MenuItem(
+                label: "Save to local",
+                onClicked: () async {
+                  var result =
+                      await showSavePanel(suggestedFileName: "block.json");
+                  WidgetProvider provider = Provider.of(context, listen: false);
+                  if (!result.canceled) {
+                    File file = File(result.paths.first);
+                    file.writeAsString(
+                      JsonEncoder().convert(
+                        provider.pages
+                            .map(
+                              (e) => e.toJSON(),
+                            )
+                            .toList(),
+                      ),
+                    );
+                  }
+                }),
+          ],
+        ),
+      ],
+    );
   }
 
   @override

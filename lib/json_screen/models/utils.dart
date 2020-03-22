@@ -167,7 +167,7 @@ dynamic renderContainer(c.Container container, BuildContext context,
       children: container.children
           .map(
             (e) => TimelineModel(
-              renderBlock(e, (link) => null, (imageSrc) => null),
+              renderBlock(e, onlinkTap, onImageTap),
               leading: Text("${e.label}"),
             ),
           )

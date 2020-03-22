@@ -25,10 +25,10 @@ dependencies:
   cupertino_icons: ^0.1.3
   provider: ^4.0.4
   flutter_highlight: ^0.6.0
-  zefyr:
-    git:
-      path: packages/zefyr
-      url: https://github.com/sirily11/zefyr.git
+  file_chooser:
+    path: ./packages/file_chooser
+  menubar:
+    path: ./packages/menubar
   json_screen:
     path: ../
 
