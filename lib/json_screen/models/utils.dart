@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Page;
 import 'package:json_schema_form/json_textform/JSONSchemaForm.dart';
 import 'package:json_screen/json_screen.dart';
 import 'package:json_screen/json_screen/models/block.dart';

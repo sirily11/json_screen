@@ -3,6 +3,9 @@ import 'package:json_screen/json_screen/models/container.dart';
 import 'package:json_screen/json_screen/models/page.dart';
 import 'package:xml/xml.dart' as xmlParser;
 
+import 'container.dart';
+import 'container.dart';
+
 abstract class Converter {
   /// convert data into pages
   List<Page> convert();
@@ -16,24 +19,74 @@ class XMLConverter implements Converter {
 
   /// Convert containers xml
   List<Container> _convertContainer(List<xmlParser.XmlNode> xmlNodes) {
-    for(var node in xmlNodes){
-      if(node.)
+    List<Container> containers = [];
+    for (var node in xmlNodes) {
+      var blocks = this._convertBlock(node.children);
+      if (node is xmlParser.XmlElement) {
+        if (node.name.local == "container") {
+          containers.add(Container(children: blocks));
+        } else if (node.name.local == "horizontal") {
+          containers.add(HorizontalCarousel(children: blocks));
+        } else if (node.name.local == "story") {
+          var height = node.getAttribute("height");
+          var width = node.getAttribute("width");
+
+          containers.add(
+            StoryContainer(
+              children: blocks,
+              height: double.tryParse(height),
+              width: double.tryParse(width),
+            ),
+          );
+        }
+      }
     }
+    return containers;
   }
 
   /// convert json into blocks
   List<Block> _convertBlock(List<xmlParser.XmlNode> xmlNodes) {
-    
+    List<Block> blocks = [];
+    for (var node in xmlNodes) {
+      if (node is xmlParser.XmlElement) {
+        String content = node.text;
+        String label = node.getAttribute("label");
+        String data = node.getAttribute("data");
+
+        switch (node.name.local) {
+          case "text":
+            blocks.add(
+              TextBlock(content: node.text, label: label),
+            );
+            break;
+
+          case "image":
+            blocks.add(
+              ImageBlock(label: label, data: data, content: content),
+            );
+            break;
+
+          case "header":
+            int level = int.tryParse(node.getAttribute("level"));
+            blocks.add(
+              HeaderBlock(content: content, label: label, level: level),
+            );
+            break;
+        }
+      }
+    }
+    return blocks;
   }
 
   @override
   List<Page<Container<Block>>> convert() {
     final document = xmlParser.parse(xml);
     List<Page> pages = [];
-    for (var page in document.children) {
+    for (var page in document.findAllElements("page")) {
       var containers = this._convertContainer(page.children);
       pages.add(Page(containers: containers));
     }
+    return pages;
   }
 }
 

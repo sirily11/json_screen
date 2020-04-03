@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Page;
 import 'package:json_screen/json_screen.dart';
 import 'package:json_screen/json_screen/models/container.dart' as c;
 import 'package:json_screen/json_screen/models/converter.dart';

@@ -86,8 +86,7 @@ class TextBlock extends Block {
   @override
   String content;
 
-  @override
-  BlockTypes types = BlockTypes.text;
+  final BlockTypes types = BlockTypes.text;
 
   @override
   String label;

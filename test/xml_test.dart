@@ -7,7 +7,7 @@ void main() {
     var xml = '''<?xml version="1.0"?>
   <page> 
     <container>
-      <header level=2>Hello</header>
+      <header level="2">Hello</header>
       <text>Hello</text>
     </container>
   </page>

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Page;
 import 'package:json_screen/json_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:widget_builder/models/widgetsProvider.dart';
