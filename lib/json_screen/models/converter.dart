@@ -1,10 +1,40 @@
 import 'package:json_screen/json_screen.dart';
 import 'package:json_screen/json_screen/models/container.dart';
 import 'package:json_screen/json_screen/models/page.dart';
+import 'package:xml/xml.dart' as xmlParser;
 
 abstract class Converter {
   /// convert data into pages
   List<Page> convert();
+}
+
+class XMLConverter implements Converter {
+  /// json data
+  String xml;
+
+  XMLConverter({this.xml});
+
+  /// Convert containers xml
+  List<Container> _convertContainer(List<xmlParser.XmlNode> xmlNodes) {
+    for(var node in xmlNodes){
+      if(node.)
+    }
+  }
+
+  /// convert json into blocks
+  List<Block> _convertBlock(List<xmlParser.XmlNode> xmlNodes) {
+    
+  }
+
+  @override
+  List<Page<Container<Block>>> convert() {
+    final document = xmlParser.parse(xml);
+    List<Page> pages = [];
+    for (var page in document.children) {
+      var containers = this._convertContainer(page.children);
+      pages.add(Page(containers: containers));
+    }
+  }
 }
 
 /// A JSON converter which can convert json

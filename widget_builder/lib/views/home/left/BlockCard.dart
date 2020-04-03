@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:json_screen/json_screen/models/block.dart';
 import 'package:provider/provider.dart';
@@ -59,7 +61,8 @@ class BlockCard extends StatelessWidget {
         title: Text(
           "${block.types.toString()}",
         ),
-        subtitle: Text("${block.content}"),
+        subtitle: Text(
+            "${block.content.substring(0, min(block.content.length, 20))}"),
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(bottom: 8, left: 20, right: 40),

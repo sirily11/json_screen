@@ -29,6 +29,26 @@ class _HomePageState extends State<HomePage> {
           label: "File",
           children: [
             MenuItem(
+                label: "Open file and listen",
+                onClicked: () async {
+                  var result = await showOpenPanel(allowedFileTypes: ["json"]);
+                  if (!result.canceled) {
+                    File file = File(result.paths.first);
+
+                    WidgetProvider provider =
+                        Provider.of(context, listen: false);
+
+                    var fileStream = file.watch();
+                    var content = await file.readAsString();
+                    provider.loadPageFromString(content);
+                    fileStream.listen((event) async {
+                      File newFile = File(event.path);
+                      var content = await newFile.readAsString();
+                      provider.loadPageFromString(content, isUpdate: true);
+                    });
+                  }
+                }),
+            MenuItem(
                 label: "Save to local",
                 onClicked: () async {
                   var result =

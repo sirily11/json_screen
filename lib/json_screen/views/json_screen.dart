@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Page;
 import 'package:json_screen/json_screen/models/converter.dart';
 import 'package:json_screen/json_screen/models/page.dart';
 import 'package:json_screen/json_screen/models/utils.dart';
@@ -46,7 +46,7 @@ class _JsonScreenState extends State<JsonScreen> {
       setState(() {
         this.pages = converter.convert();
       });
-    } else if (widget.pages != null && oldWidget.json != widget.json) {
+    } else if (widget.pages != null && oldWidget.pages != widget.pages) {
       setState(() {
         this.pages = widget.pages;
       });

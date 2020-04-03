@@ -21,17 +21,20 @@ class WidgetProvider with ChangeNotifier {
     )
   ];
 
-  void loadPageFromString(String json) {
+  void loadPageFromString(String json,
+      {bool isUpdate = false, bool showSnackbar = true}) {
     try {
       var parsed = JsonDecoder().convert(json);
       if (parsed is List) {
         var p = JSONConverter(json: parsed).convert();
         this.pages = p;
-        key.currentState.showSnackBar(
-          SnackBar(
-            content: Text("Imported json"),
-          ),
-        );
+        if (!showSnackbar) {
+          key.currentState.showSnackBar(
+            SnackBar(
+              content: isUpdate ? Text("Updated") : Text("Imported json"),
+            ),
+          );
+        }
         notifyListeners();
       } else {
         key.currentState.showSnackBar(
