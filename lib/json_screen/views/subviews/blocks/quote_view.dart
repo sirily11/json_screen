@@ -18,7 +18,7 @@ class QuoteView extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Text(
             block.content,
-            style: TextStyle(color: color),
+            style: Theme.of(context).textTheme.bodyText1.copyWith(color: color),
           ),
         ),
       ),

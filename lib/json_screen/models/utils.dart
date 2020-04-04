@@ -118,7 +118,6 @@ dynamic renderContainer(c.Container container, BuildContext context,
       );
     }
     return Padding(
-      key: Key("story-card"),
       padding: const EdgeInsets.all(8.0),
       child: Container(
         color: Theme.of(context).primaryColor,

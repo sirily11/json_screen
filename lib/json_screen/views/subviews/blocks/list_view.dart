@@ -10,24 +10,28 @@ class ListViewView extends StatelessWidget {
 
   ListViewView({this.block, this.onLinkTap, this.onImageTap});
 
-  Widget _renderUnorderedList(Block block) {
+  Widget _renderUnorderedList(Block block, BuildContext context) {
+    TextStyle style = Theme.of(context).textTheme.bodyText1;
     return RichText(
       text: TextSpan(
         style: TextStyle(color: Colors.black),
         children: [
-          TextSpan(text: block.content != null ? "- " : ""),
+          TextSpan(text: block.content != null ? "- " : "", style: style),
           WidgetSpan(child: renderBlock(block, onLinkTap, onImageTap))
         ],
       ),
     );
   }
 
-  Widget _renderOrderedList(Block block, int index) {
+  Widget _renderOrderedList(Block block, int index, BuildContext context) {
+    TextStyle style = Theme.of(context).textTheme.bodyText1;
     return RichText(
       text: TextSpan(
-        style: TextStyle(color: Colors.black),
+        style: style,
         children: [
-          TextSpan(text: block.content != null ? "${index + 1}. " : ""),
+          TextSpan(
+              text: block.content != null ? "${index + 1}. " : "",
+              style: style),
           WidgetSpan(child: renderBlock(block, onLinkTap, onImageTap))
         ],
       ),
@@ -41,13 +45,14 @@ class ListViewView extends StatelessWidget {
       child: ListView.builder(
         shrinkWrap: true,
         itemCount: block.children.length,
+        physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           switch (block.styles) {
             case ListStyles.ordered:
-              return _renderOrderedList(block.children[index], index);
+              return _renderOrderedList(block.children[index], index, context);
 
             default:
-              return _renderUnorderedList(block.children[index]);
+              return _renderUnorderedList(block.children[index], context);
           }
         },
       ),

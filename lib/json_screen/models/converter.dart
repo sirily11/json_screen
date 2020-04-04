@@ -127,6 +127,10 @@ class XMLConverter implements Converter {
             );
             break;
 
+          case "quote":
+            blocks.add(QuoteBlock(content: content, label: label));
+            break;
+
           case "newline":
             blocks.add(NewLineBlock());
             break;
@@ -140,7 +144,11 @@ class XMLConverter implements Converter {
             List<Block> children =
                 this._convertBlock(node.children ?? [], false);
             blocks.add(
-              ListBlock(children: children, content: content, label: label),
+              ListBlock(
+                  children: children,
+                  content: content,
+                  label: label,
+                  styles: listStyle),
             );
             break;
 

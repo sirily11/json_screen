@@ -20,7 +20,7 @@ class LinkView extends StatelessWidget {
         "${block.content}",
         style: Theme.of(context)
             .textTheme
-            .bodyText2
+            .bodyText1
             .copyWith(color: Colors.blue, decoration: TextDecoration.underline),
       ),
     );

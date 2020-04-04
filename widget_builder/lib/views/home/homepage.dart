@@ -197,15 +197,17 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 15, fontWeight: FontWeight.normal),
                       ),
                 ),
-                child: JsonScreen(
-                  onImageTap: (image) async {
-                    print(image);
-                  },
-                  onLinkTap: (link) async {
-                    print(link);
-                  },
-                  pages: useGUI ? provider.pages : null,
-                  json: !useGUI ? parsedJSON ?? [] : null,
+                child: Container(
+                  child: JsonScreen(
+                    onImageTap: (image) async {
+                      print(image);
+                    },
+                    onLinkTap: (link) async {
+                      print(link);
+                    },
+                    pages: useGUI ? provider.pages : null,
+                    json: !useGUI ? parsedJSON ?? [] : null,
+                  ),
                 ),
               ),
             )

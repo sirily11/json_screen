@@ -76,6 +76,7 @@ class _JsonScreenState extends State<JsonScreen> {
             itemBuilder: (context, index) {
               return Scrollbar(
                 child: SingleChildScrollView(
+                  key: Key("page-$index"),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: renderPage(this.pages[index], context,
