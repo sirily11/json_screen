@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:json_screen/json_screen.dart';
 import 'package:json_screen/json_screen/models/container.dart';
 import 'package:json_screen/json_screen/models/page.dart';
@@ -23,21 +25,45 @@ class XMLConverter implements Converter {
     for (var node in xmlNodes) {
       var blocks = this._convertBlock(node.children);
       if (node is xmlParser.XmlElement) {
-        if (node.name.local == "container") {
-          containers.add(Container(children: blocks));
-        } else if (node.name.local == "horizontal") {
-          containers.add(HorizontalCarousel(children: blocks));
-        } else if (node.name.local == "story") {
-          var height = node.getAttribute("height");
-          var width = node.getAttribute("width");
-
-          containers.add(
-            StoryContainer(
+        switch (node.name.local) {
+          case "container":
+            containers.add(Container(
               children: blocks,
-              height: double.tryParse(height),
-              width: double.tryParse(width),
-            ),
-          );
+              types: ContainerTypes.container,
+            ));
+            break;
+          case "horizontal":
+            containers.add(HorizontalCarousel(children: blocks));
+            break;
+          case "form":
+            var schema = JsonDecoder().convert(node.text);
+            var url = node.getAttribute("url");
+            var method = node.getAttribute("method");
+            var width = double.tryParse(node.getAttribute("width") ?? "");
+            var height = double.tryParse(node.getAttribute("height") ?? "");
+            containers.add(
+              FormContainer(
+                schema: schema,
+                url: url,
+                method: method,
+                height: height,
+                width: width,
+                children: blocks,
+              ),
+            );
+            break;
+          case "story":
+            var height = node.getAttribute("height");
+            var width = node.getAttribute("width");
+
+            containers.add(
+              StoryContainer(
+                children: blocks,
+                height: double.tryParse(height ?? ""),
+                width: double.tryParse(width ?? ""),
+              ),
+            );
+            break;
         }
       }
     }
@@ -58,6 +84,7 @@ class XMLConverter implements Converter {
             blocks.add(
               TextBlock(content: node.text, label: label),
             );
+            blocks.add(NewLineBlock());
             break;
 
           case "image":
@@ -70,6 +97,46 @@ class XMLConverter implements Converter {
             int level = int.tryParse(node.getAttribute("level"));
             blocks.add(
               HeaderBlock(content: content, label: label, level: level),
+            );
+            blocks.add(NewLineBlock());
+            break;
+
+          case "link":
+            blocks.add(
+              LinkBlock(content: content, data: data, label: label),
+            );
+            break;
+
+          case "newline":
+            blocks.add(NewLineBlock());
+            break;
+
+          case "list":
+            var style = node.getAttribute("style");
+            ListStyles listStyle = ListStyles.ordered;
+            if (style == "unordered") {
+              listStyle = ListStyles.unordered;
+            }
+            List<Block> children = this._convertBlock(node.children ?? []);
+            blocks.add(
+              ListBlock(children: children, content: content, label: label),
+            );
+            break;
+
+          case "table":
+            List<Block> columns = this._convertBlock(
+              node.findElements("column").first?.children,
+            );
+            List<List<Block>> rows = (node.findElements("row").toList())
+                .map((e) => this._convertBlock(e.children))
+                .toList();
+            blocks.add(
+              TableBlock(
+                content: content,
+                label: label,
+                columns: columns,
+                rows: rows,
+              ),
             );
             break;
         }

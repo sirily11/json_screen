@@ -10,10 +10,20 @@ typedef Future<void> OnImageTap(String imageSrc);
 class JsonScreen extends StatefulWidget {
   final List<dynamic> json;
   final List<Page> pages;
+
+  /// Default is json. You can choose use XmlConverter or JSONConverter
+  /// If you use this parameter, you can ignore the json field
+  final Converter converter;
   final OnLinkTap onLinkTap;
   final OnImageTap onImageTap;
 
-  JsonScreen({this.json, this.onImageTap, this.onLinkTap, this.pages});
+  JsonScreen({
+    this.json,
+    this.onImageTap,
+    this.onLinkTap,
+    this.pages,
+    this.converter,
+  });
 
   @override
   _JsonScreenState createState() => _JsonScreenState();
@@ -27,7 +37,8 @@ class _JsonScreenState extends State<JsonScreen> {
   void initState() {
     if (widget.json != null) {
       print("convert json");
-      JSONConverter converter = JSONConverter(json: widget.json);
+      Converter converter =
+          widget.converter ?? JSONConverter(json: widget.json);
       this.pages = converter.convert();
     } else if (widget.pages != null) {
       this.pages = widget.pages;
@@ -41,7 +52,8 @@ class _JsonScreenState extends State<JsonScreen> {
   @override
   void didUpdateWidget(JsonScreen oldWidget) {
     if (widget.json != null && oldWidget.json != widget.json) {
-      JSONConverter converter = JSONConverter(json: widget.json);
+      JSONConverter converter =
+          widget.converter ?? JSONConverter(json: widget.json);
 
       setState(() {
         this.pages = converter.convert();

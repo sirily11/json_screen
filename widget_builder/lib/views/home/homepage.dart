@@ -31,20 +31,28 @@ class _HomePageState extends State<HomePage> {
             MenuItem(
                 label: "Open file and listen",
                 onClicked: () async {
-                  var result = await showOpenPanel(allowedFileTypes: ["json"]);
+                  var result =
+                      await showOpenPanel(allowedFileTypes: ["json", "xml"]);
                   if (!result.canceled) {
                     File file = File(result.paths.first);
-
                     WidgetProvider provider =
                         Provider.of(context, listen: false);
-
+                    bool isJSON = file.path.contains("json");
                     var fileStream = file.watch();
                     var content = await file.readAsString();
-                    provider.loadPageFromString(content);
+                    provider.loadPageFromString(
+                      content,
+                      types: isJSON ? DataTypes.json : DataTypes.xml,
+                    );
                     fileStream.listen((event) async {
                       File newFile = File(event.path);
                       var content = await newFile.readAsString();
-                      provider.loadPageFromString(content, isUpdate: true);
+                      provider.loadPageFromString(
+                        content,
+                        isUpdate: true,
+                        showSnackbar: false,
+                        types: isJSON ? DataTypes.json : DataTypes.xml,
+                      );
                     });
                   }
                 }),

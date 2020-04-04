@@ -5,6 +5,8 @@ import 'package:json_screen/json_screen.dart';
 import 'package:json_screen/json_screen/models/container.dart' as c;
 import 'package:json_screen/json_screen/models/converter.dart';
 
+enum DataTypes { json, xml }
+
 class WidgetProvider with ChangeNotifier {
   GlobalKey<ScaffoldState> key = GlobalKey();
   List<Page> pages = [
@@ -21,33 +23,44 @@ class WidgetProvider with ChangeNotifier {
     )
   ];
 
-  void loadPageFromString(String json,
-      {bool isUpdate = false, bool showSnackbar = true}) {
+  /// convert string into page object.
+  /// [data] is a json string or xml string
+  /// []
+  void loadPageFromString(String data,
+      {bool isUpdate = false,
+      bool showSnackbar = true,
+      @required DataTypes types}) {
     try {
-      var parsed = JsonDecoder().convert(json);
-      if (parsed is List) {
-        var p = JSONConverter(json: parsed).convert();
+      if (types == DataTypes.json) {
+        var parsed = JsonDecoder().convert(data);
+        if (parsed is List) {
+          var p = JSONConverter(json: parsed).convert();
+          this.pages = p;
+          if (showSnackbar) {
+            key.currentState.showSnackBar(
+              SnackBar(
+                content: isUpdate ? Text("Updated") : Text("Imported json"),
+              ),
+            );
+          }
+        }
+      } else {
+        var p = XMLConverter(xml: data).convert();
         this.pages = p;
-        if (!showSnackbar) {
+        if (showSnackbar) {
           key.currentState.showSnackBar(
             SnackBar(
-              content: isUpdate ? Text("Updated") : Text("Imported json"),
+              content: isUpdate ? Text("Updated") : Text("Imported xml"),
             ),
           );
         }
-        notifyListeners();
-      } else {
-        key.currentState.showSnackBar(
-          SnackBar(
-            content: Text("Unable import json"),
-          ),
-        );
       }
+      notifyListeners();
     } catch (err) {
       print(err);
       key.currentState.showSnackBar(
         SnackBar(
-          content: Text("Unable import json"),
+          content: Text("Unable import: $err"),
         ),
       );
     }

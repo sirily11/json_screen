@@ -9,7 +9,8 @@ class ImageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return Center(
+      child: InkWell(
         onTap: () async {
           if (onImageTap != null) {
             await onImageTap(
@@ -17,6 +18,10 @@ class ImageView extends StatelessWidget {
             );
           }
         },
-        child: Image.network(block.data ?? ""));
+        child: Image.network(
+          block.data ?? "",
+        ),
+      ),
+    );
   }
 }
