@@ -44,6 +44,10 @@ class BlockCard extends StatelessWidget {
       return TableEditPanel(
         block: block,
       );
+    } else if (block is CountDownBlock) {
+      return ImageEditPanel(
+        block: block,
+      );
     }
     return BlockEditPanel(
       block: block,

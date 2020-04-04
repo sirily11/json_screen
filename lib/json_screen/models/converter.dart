@@ -23,7 +23,7 @@ class XMLConverter implements Converter {
   List<Container> _convertContainer(List<xmlParser.XmlNode> xmlNodes) {
     List<Container> containers = [];
     for (var node in xmlNodes) {
-      var blocks = this._convertBlock(node.children);
+      var blocks = this._convertBlock(node.children, true);
       if (node is xmlParser.XmlElement) {
         switch (node.name.local) {
           case "container":
@@ -31,6 +31,12 @@ class XMLConverter implements Converter {
               children: blocks,
               types: ContainerTypes.container,
             ));
+            break;
+          case "timeline":
+            containers.add(
+              TimelineContainer(
+                  children: blocks, types: ContainerTypes.timeline),
+            );
             break;
           case "horizontal":
             containers.add(HorizontalCarousel(children: blocks));
@@ -71,7 +77,8 @@ class XMLConverter implements Converter {
   }
 
   /// convert json into blocks
-  List<Block> _convertBlock(List<xmlParser.XmlNode> xmlNodes) {
+  List<Block> _convertBlock(
+      List<xmlParser.XmlNode> xmlNodes, bool autoNewline) {
     List<Block> blocks = [];
     for (var node in xmlNodes) {
       if (node is xmlParser.XmlElement) {
@@ -84,7 +91,7 @@ class XMLConverter implements Converter {
             blocks.add(
               TextBlock(content: node.text, label: label),
             );
-            blocks.add(NewLineBlock());
+            if (autoNewline) blocks.add(NewLineBlock());
             break;
 
           case "image":
@@ -93,12 +100,25 @@ class XMLConverter implements Converter {
             );
             break;
 
+          case "countdown":
+            String abosulute = node.getAttribute("absolute");
+            blocks.add(
+              CountDownBlock(
+                label: label,
+                data: data,
+                content: content,
+                absolute: abosulute == "true" ? true : false,
+              ),
+            );
+            if (autoNewline) blocks.add(NewLineBlock());
+            break;
+
           case "header":
             int level = int.tryParse(node.getAttribute("level"));
             blocks.add(
               HeaderBlock(content: content, label: label, level: level),
             );
-            blocks.add(NewLineBlock());
+            if (autoNewline) blocks.add(NewLineBlock());
             break;
 
           case "link":
@@ -117,7 +137,8 @@ class XMLConverter implements Converter {
             if (style == "unordered") {
               listStyle = ListStyles.unordered;
             }
-            List<Block> children = this._convertBlock(node.children ?? []);
+            List<Block> children =
+                this._convertBlock(node.children ?? [], false);
             blocks.add(
               ListBlock(children: children, content: content, label: label),
             );
@@ -126,9 +147,10 @@ class XMLConverter implements Converter {
           case "table":
             List<Block> columns = this._convertBlock(
               node.findElements("column").first?.children,
+              false,
             );
             List<List<Block>> rows = (node.findElements("row").toList())
-                .map((e) => this._convertBlock(e.children))
+                .map((e) => this._convertBlock(e.children, false))
                 .toList();
             blocks.add(
               TableBlock(
@@ -264,6 +286,9 @@ class JSONConverter implements Converter {
           break;
         case BlockTypes.newline:
           blocks.add(NewLineBlock());
+          break;
+        case BlockTypes.countdown:
+          blocks.add(ImageBlock.fromJSON(j));
           break;
       }
     }

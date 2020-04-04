@@ -5,7 +5,7 @@ import 'package:widget_builder/models/widgetsProvider.dart';
 import 'package:widget_builder/views/editpanels/blockTypesSelector.dart';
 
 class ImageEditPanel extends StatefulWidget {
-  final ImageBlock block;
+  final DataBlock block;
 
   ImageEditPanel({@required this.block});
 

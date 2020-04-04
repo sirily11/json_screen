@@ -6,6 +6,7 @@ import 'package:json_screen/json_screen.dart';
 import 'package:json_screen/json_screen/models/block.dart';
 import 'package:json_screen/json_screen/models/page.dart';
 import 'package:json_screen/json_screen/views/json_screen.dart';
+import 'package:json_screen/json_screen/views/subviews/blocks/countdown_view.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/header_view.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/image_view.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/link_view.dart';
@@ -54,6 +55,10 @@ Widget renderBlock(Block block, OnLinkTap onlinkTap, OnImageTap onImageTap) {
     return LinkView(
       block: block,
       onLinkTap: onlinkTap,
+    );
+  } else if (block is CountDownBlock) {
+    return CountdownView(
+      block: block,
     );
   }
   return Container();
@@ -121,6 +126,7 @@ dynamic renderContainer(c.Container container, BuildContext context,
         width: container.width,
         child: StoryView(
           container.children
+              .where((element) => !(element is NewLineBlock))
               .map(
                 (e) => renderStoryBlock(e, context),
               )
@@ -165,6 +171,7 @@ dynamic renderContainer(c.Container container, BuildContext context,
       position: TimelinePosition.Left,
       lineColor: Theme.of(context).textTheme.bodyText1.color,
       children: container.children
+          .where((element) => !(element is NewLineBlock))
           .map(
             (e) => TimelineModel(
               renderBlock(e, onlinkTap, onImageTap),

@@ -24,7 +24,8 @@ enum BlockTypes {
 
   web,
 
-  newline
+  newline,
+  countdown,
 }
 
 enum ListStyles { unordered, ordered }
@@ -79,6 +80,46 @@ class DataBlock extends Block {
       "data": data,
       "label": label
     };
+  }
+}
+
+class CountDownBlock extends DataBlock {
+  bool absolute;
+  @override
+  String content;
+
+  @override
+  BlockTypes types = BlockTypes.countdown;
+
+  @override
+  String label;
+
+  CountDownBlock({this.content, String data, this.label, bool absolute})
+      : super(content: content, data: data, label: label) {
+    this.absolute = absolute ?? false;
+  }
+
+  @override
+  Map<String, dynamic> toJSON() {
+    return {
+      "content": content,
+      "absolute": absolute,
+      "types": types.toString().replaceFirst("BlockTypes.", ""),
+      "data": data,
+      "label": label
+    };
+  }
+
+  factory CountDownBlock.copyWith({String content, String data, String label}) {
+    return CountDownBlock(content: content, data: data, label: label);
+  }
+
+  factory CountDownBlock.fromJSON(Map<String, dynamic> json) {
+    return CountDownBlock(
+      content: json['content'],
+      data: json['data'],
+      label: json['label'],
+    );
   }
 }
 

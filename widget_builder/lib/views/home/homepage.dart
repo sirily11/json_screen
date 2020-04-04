@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                     title: "Import JSON",
                     maxLines: 10,
                     onTextSubmit: (t) {
-                      provider.loadPageFromString(t);
+                      provider.loadPageFromString(t, types: DataTypes.json);
                     },
                   ),
                 );
@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                           child: Container(
                             height: double.infinity,
                             child: SelectableText(
-                              JsonEncoder().convert(
+                              JsonEncoder.withIndent("  ").convert(
                                 provider.pages
                                     .map(
                                       (e) => e.toJSON(),
@@ -190,15 +190,23 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             Expanded(
-              child: JsonScreen(
-                onImageTap: (image) async {
-                  print(image);
-                },
-                onLinkTap: (link) async {
-                  print(link);
-                },
-                pages: useGUI ? provider.pages : null,
-                json: !useGUI ? parsedJSON ?? [] : null,
+              child: Theme(
+                data: ThemeData(
+                  textTheme: Theme.of(context).textTheme.copyWith(
+                        bodyText1: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.normal),
+                      ),
+                ),
+                child: JsonScreen(
+                  onImageTap: (image) async {
+                    print(image);
+                  },
+                  onLinkTap: (link) async {
+                    print(link);
+                  },
+                  pages: useGUI ? provider.pages : null,
+                  json: !useGUI ? parsedJSON ?? [] : null,
+                ),
               ),
             )
           ],

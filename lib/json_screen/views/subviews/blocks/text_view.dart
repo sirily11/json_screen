@@ -8,6 +8,9 @@ class TextView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("${block.content}");
+    return Text(
+      "${block.content}",
+      style: Theme.of(context).textTheme.bodyText1,
+    );
   }
 }
