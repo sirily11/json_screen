@@ -16,7 +16,7 @@ void main() {
       var page = XMLConverter(xml: xml).convert();
       expect(page.length, 1);
       expect(page[0].containers.length, 1);
-      expect(page[0].containers[0].children.length, 2);
+      expect(page[0].containers[0].children.length, 3);
       expect(page[0].containers[0].children[0].types, BlockTypes.header);
       expect(page[0].containers[0].children[0].content, "Hello");
     });

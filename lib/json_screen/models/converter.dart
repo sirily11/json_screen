@@ -91,7 +91,7 @@ class XMLConverter implements Converter {
             blocks.add(
               TextBlock(content: node.text, label: label),
             );
-            if (autoNewline) blocks.add(NewLineBlock());
+
             break;
 
           case "image":
@@ -296,7 +296,7 @@ class JSONConverter implements Converter {
           blocks.add(NewLineBlock());
           break;
         case BlockTypes.countdown:
-          blocks.add(ImageBlock.fromJSON(j));
+          blocks.add(CountDownBlock.fromJSON(j));
           break;
       }
     }
