@@ -26,6 +26,7 @@ enum BlockTypes {
 
   newline,
   countdown,
+  listItem
 }
 
 enum ListStyles { unordered, ordered }
@@ -116,10 +117,10 @@ class CountDownBlock extends DataBlock {
 
   factory CountDownBlock.fromJSON(Map<String, dynamic> json) {
     return CountDownBlock(
-      content: json['content'],
-      data: json['data'],
-      label: json['label'],
-    );
+        content: json['content'],
+        data: json['data'],
+        label: json['label'],
+        absolute: json['absolute']);
   }
 }
 
@@ -203,7 +204,12 @@ class HeaderBlock extends Block {
 
   @override
   Map<String, dynamic> toJSON() {
-    return {"content": content, "level": level, "label": "label"};
+    return {
+      "content": content,
+      "level": level,
+      "label": "label",
+      "types": "header"
+    };
   }
 }
 
@@ -338,6 +344,7 @@ class TableBlock extends Block {
 
   toJSON() {
     return {
+      "types": types.toString().replaceFirst("BlockTypes.", ""),
       "content": content,
       "columns": columns.map((e) => e.toJSON()).toList(),
       "rows": rows.map((e) => e.map((el) => el.toJSON()).toList()).toList(),
@@ -355,5 +362,27 @@ class WebViewBlock extends DataBlock {
 
   factory WebViewBlock.fromJSON(Map<String, dynamic> json) {
     return WebViewBlock(content: json['content'], data: json['data']);
+  }
+}
+
+class ListItemBlock extends Block {
+  @override
+  BlockTypes types = BlockTypes.listItem;
+  final Block leading;
+  final Block title;
+  final Block subtitle;
+  final Block ending;
+
+  ListItemBlock({this.leading, this.ending, this.subtitle, this.title});
+
+  @override
+  Map<String, dynamic> toJSON() {
+    return {
+      "leading": leading.toJSON(),
+      "title": title.toJSON(),
+      "ending": ending.toJSON(),
+      "subtitle": subtitle.toJSON(),
+      "types": types.toString().replaceFirst("BlockTypes.", "")
+    };
   }
 }

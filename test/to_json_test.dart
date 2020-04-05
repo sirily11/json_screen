@@ -7,6 +7,10 @@ void main() {
         '''<page><container> <countdown data="">Count down</countdown></container></page>
     ''';
 
+    var headerBlock =
+        '''<page><container> <header level="5">Header</header></container></page>
+    ''';
+
     test("countdown", () {
       var page = XMLConverter(xml: countDownBlock).convert();
       var countdown = page[0].containers[0].children[0];
@@ -17,6 +21,21 @@ void main() {
       expect(countdownJSONBlock.length, 1);
       expect(countdownJSONBlock[0].containers[0].children[0].types,
           BlockTypes.countdown);
+    });
+
+    test("header", () {
+      var page = XMLConverter(xml: headerBlock).convert();
+      var header = page[0].containers[0].children[0];
+      expect(header.types, BlockTypes.header);
+      var json = header.toJSON();
+      expect(json['types'], "header");
+      expect(json['level'], 5);
+      var headerJSONBlock =
+          JSONConverter(json: page.map((e) => e.toJSON()).toList()).convert();
+      expect(headerJSONBlock.length, 1);
+      expect(headerJSONBlock[0].containers[0].children[0].types,
+          BlockTypes.header);
+      expect(headerJSONBlock[0].containers[0].children[0].content, "Header");
     });
   });
 }

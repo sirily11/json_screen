@@ -26,6 +26,15 @@ class XMLConverter implements Converter {
       var blocks = this._convertBlock(node.children, true);
       if (node is xmlParser.XmlElement) {
         switch (node.name.local) {
+          case "list-container":
+            var listItemNode = node.findElements("list-item").toList();
+            var items = this
+                ._convertBlock(listItemNode, false)
+                .map((e) => e as ListItemBlock)
+                .toList();
+            containers.add(ListViewContainer(children: items));
+            break;
+
           case "container":
             containers.add(Container(
               children: blocks,
@@ -87,6 +96,46 @@ class XMLConverter implements Converter {
         String data = node.getAttribute("data");
 
         switch (node.name.local) {
+          case "list-item":
+            var leadingNode = node.findElements("list-leading").first;
+            var endingNode = node.findElements("list-ending").first;
+            var titleNode = node.findElements("list-title").first;
+            var subtitleNode = node.findElements("list-subtitle").first;
+
+            Block leading = this
+                        ._convertBlock(leadingNode?.children ?? [], false)
+                        .length >
+                    0
+                ? this._convertBlock(leadingNode?.children ?? [], false).first
+                : null;
+
+            Block ending =
+                this._convertBlock(endingNode?.children ?? [], false).length > 0
+                    ? this
+                        ._convertBlock(endingNode?.children ?? [], false)
+                        .first
+                    : null;
+
+            Block title =
+                this._convertBlock(titleNode?.children ?? [], false).length > 0
+                    ? this._convertBlock(titleNode?.children ?? [], false).first
+                    : null;
+            Block subtitle = this
+                        ._convertBlock(subtitleNode?.children ?? [], false)
+                        .length >
+                    0
+                ? this._convertBlock(subtitleNode?.children ?? [], false).first
+                : null;
+
+            blocks.add(
+              ListItemBlock(
+                  title: title,
+                  ending: ending,
+                  leading: leading,
+                  subtitle: subtitle),
+            );
+            break;
+
           case "text":
             blocks.add(
               TextBlock(content: node.text, label: label),
@@ -239,6 +288,9 @@ class JSONConverter implements Converter {
           containers
               .add(TimelineContainer(children: blocks, types: container.types));
           break;
+        case ContainerTypes.list:
+          containers.add(ListViewContainer(children: blocks));
+          break;
       }
     }
     return containers;
@@ -297,6 +349,27 @@ class JSONConverter implements Converter {
           break;
         case BlockTypes.countdown:
           blocks.add(CountDownBlock.fromJSON(j));
+          break;
+        case BlockTypes.listItem:
+          Block leading = this._convertBlock(j['leading']).length > 0
+              ? this._convertBlock(j['leading']).first
+              : null;
+          Block ending = this._convertBlock(j['ending']).length > 0
+              ? this._convertBlock(j['ending']).first
+              : null;
+          Block title = this._convertBlock(j['title']).length > 0
+              ? this._convertBlock(j['title']).first
+              : null;
+          Block subtitle = this._convertBlock(j['subtitle']).length > 0
+              ? this._convertBlock(j['subtitle']).first
+              : null;
+          blocks.add(
+            ListItemBlock(
+                leading: leading,
+                ending: ending,
+                title: title,
+                subtitle: subtitle),
+          );
           break;
       }
     }

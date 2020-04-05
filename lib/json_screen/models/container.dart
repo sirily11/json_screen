@@ -1,6 +1,6 @@
 import 'package:json_screen/json_screen.dart';
 
-enum ContainerTypes { container, horizontal, story, form, timeline }
+enum ContainerTypes { container, horizontal, story, form, timeline, list }
 
 /// Base Container
 class Container<T extends Block> {
@@ -61,6 +61,17 @@ class StoryContainer<T extends Block> extends Container {
 
   factory StoryContainer.copyWith({List<T> children}) =>
       StoryContainer(children: children);
+}
+
+class ListViewContainer extends Container {
+  final ContainerTypes types = ContainerTypes.list;
+  final List<ListItemBlock> children;
+
+  ListViewContainer({this.children}) : super(children: children) {
+    if (!(children is List<ListItemBlock>)) {
+      throw Exception("Children should be list item block");
+    }
+  }
 }
 
 class FormContainer extends Container {

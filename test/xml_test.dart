@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:json_screen/json_screen/models/block.dart';
+import 'package:json_screen/json_screen/models/container.dart';
 import 'package:json_screen/json_screen/models/converter.dart';
 
 void main() {
@@ -71,6 +72,26 @@ void main() {
     </container>
   </page>
   ''';
+
+    var listContainerXML = '''<page>
+    <list-container>
+        <list-item>
+            <list-leading>
+                <text>hello</text>
+            </list-leading>
+            <list-ending>
+                <text>hello</text>
+            </list-ending>
+            <list-title>
+                <text>hello</text>
+            </list-title>
+            <list-subtitle>
+                <text>hello</text>
+            </list-subtitle>
+        </list-item>
+    </list-container>
+</page>
+  ''';
     test("Parse xml", () {
       var page = XMLConverter(xml: xml).convert();
       expect(page.length, 1);
@@ -80,6 +101,18 @@ void main() {
       TableBlock tableBlock = page[0].containers[0].children[0];
       expect(tableBlock.columns.length, 2);
       expect(tableBlock.rows.length, 3);
+    });
+
+    test("Parse list container", () {
+      var page = XMLConverter(xml: listContainerXML).convert();
+      ListViewContainer listContainer = page[0].containers[0];
+      expect(page.length, 1);
+      expect(listContainer.types, ContainerTypes.list);
+      expect(listContainer.children.length, 1);
+      expect(listContainer.children[0].leading.content, "hello");
+      expect(listContainer.children[0].ending.content, "hello");
+      expect(listContainer.children[0].title.content, "hello");
+      expect(listContainer.children[0].subtitle.content, "hello");
     });
   });
 }
