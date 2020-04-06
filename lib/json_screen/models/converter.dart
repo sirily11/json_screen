@@ -24,7 +24,12 @@ class XMLConverter implements Converter {
     List<Container> containers = [];
     for (var node in xmlNodes) {
       var blocks = this._convertBlock(node.children, true);
+
       if (node is xmlParser.XmlElement) {
+        var width = double.tryParse(node.getAttribute("width") ?? "");
+        var height = double.tryParse(node.getAttribute("height") ?? "");
+        bool center = node.getAttribute("center") == "true" ? true : false;
+
         switch (node.name.local) {
           case "list-container":
             var listItemNode = node.findElements("list-item").toList();
@@ -39,6 +44,7 @@ class XMLConverter implements Converter {
             containers.add(Container(
               children: blocks,
               types: ContainerTypes.container,
+              center: center,
             ));
             break;
           case "timeline":
@@ -48,14 +54,17 @@ class XMLConverter implements Converter {
             );
             break;
           case "horizontal":
-            containers.add(HorizontalCarousel(children: blocks));
+            containers.add(HorizontalCarousel(
+              children: blocks,
+              height: height,
+              width: width,
+            ));
             break;
           case "form":
             var schema = JsonDecoder().convert(node.text);
             var url = node.getAttribute("url");
             var method = node.getAttribute("method");
-            var width = double.tryParse(node.getAttribute("width") ?? "");
-            var height = double.tryParse(node.getAttribute("height") ?? "");
+
             containers.add(
               FormContainer(
                 schema: schema,
@@ -94,13 +103,25 @@ class XMLConverter implements Converter {
         String content = node.text;
         String label = node.getAttribute("label");
         String data = node.getAttribute("data");
+        String h = node.getAttribute("height");
+        String w = node.getAttribute("width");
+        double height = h != null ? double.tryParse(h) : null;
+        double width = w != null ? double.tryParse(w) : null;
 
         switch (node.name.local) {
           case "list-item":
-            var leadingNode = node.findElements("list-leading").first;
-            var endingNode = node.findElements("list-ending").first;
-            var titleNode = node.findElements("list-title").first;
-            var subtitleNode = node.findElements("list-subtitle").first;
+            var leadingNode = node.findElements("list-leading").length > 0
+                ? node.findElements("list-leading").first
+                : null;
+            var endingNode = node.findElements("list-ending").length > 0
+                ? node.findElements("list-ending").first
+                : null;
+            var titleNode = node.findElements("list-title").length > 0
+                ? node.findElements("list-title").first
+                : null;
+            var subtitleNode = node.findElements("list-subtitle").length > 0
+                ? node.findElements("list-subtitle").first
+                : null;
 
             Block leading = this
                         ._convertBlock(leadingNode?.children ?? [], false)
@@ -129,23 +150,37 @@ class XMLConverter implements Converter {
 
             blocks.add(
               ListItemBlock(
-                  title: title,
-                  ending: ending,
-                  leading: leading,
-                  subtitle: subtitle),
+                height: height,
+                width: width,
+                title: title,
+                ending: ending,
+                leading: leading,
+                subtitle: subtitle,
+              ),
             );
             break;
 
           case "text":
             blocks.add(
-              TextBlock(content: node.text, label: label),
+              TextBlock(
+                content: node.text,
+                label: label,
+                height: height,
+                width: width,
+              ),
             );
 
             break;
 
           case "image":
             blocks.add(
-              ImageBlock(label: label, data: data, content: content),
+              ImageBlock(
+                label: label,
+                data: data,
+                content: content,
+                height: height,
+                width: width,
+              ),
             );
             break;
 
@@ -165,7 +200,13 @@ class XMLConverter implements Converter {
           case "header":
             int level = int.tryParse(node.getAttribute("level"));
             blocks.add(
-              HeaderBlock(content: content, label: label, level: level),
+              HeaderBlock(
+                content: content,
+                label: label,
+                level: level,
+                height: height,
+                width: width,
+              ),
             );
             if (autoNewline) blocks.add(NewLineBlock());
             break;
@@ -182,6 +223,10 @@ class XMLConverter implements Converter {
 
           case "newline":
             blocks.add(NewLineBlock());
+            break;
+
+          case "divider":
+            blocks.add(DividerBlock());
             break;
 
           case "list":
@@ -209,6 +254,9 @@ class XMLConverter implements Converter {
             List<List<Block>> rows = (node.findElements("row").toList())
                 .map((e) => this._convertBlock(e.children, false))
                 .toList();
+            String content = node.findAllElements("header").length > 0
+                ? node.findAllElements("header").first.text
+                : null;
             blocks.add(
               TableBlock(
                 content: content,
@@ -268,16 +316,20 @@ class JSONConverter implements Converter {
     for (var j in containerJSON) {
       var blocks = this._convertBlock(j['blocks'] ?? []);
       var container = Container.fromJSON(j);
+      double height = j['height'];
+      double width = j['width'];
       switch (container.types) {
         case ContainerTypes.container:
           containers.add(Container(children: blocks, types: container.types));
           break;
         case ContainerTypes.horizontal:
-          containers.add(HorizontalCarousel(children: blocks));
+          containers.add(HorizontalCarousel(
+            children: blocks,
+            height: height,
+            width: width,
+          ));
           break;
         case ContainerTypes.story:
-          double height = j['height'];
-          double width = j['width'];
           containers.add(
               StoryContainer(children: blocks, width: width, height: height));
           break;
@@ -301,6 +353,7 @@ class JSONConverter implements Converter {
     List<Block> blocks = [];
     for (var j in blockJSON) {
       Block block = Block.fromJSON(j);
+
       switch (block.types) {
         case BlockTypes.text:
           blocks.add(TextBlock.fromJSON(j));
@@ -365,11 +418,17 @@ class JSONConverter implements Converter {
               : null;
           blocks.add(
             ListItemBlock(
-                leading: leading,
-                ending: ending,
-                title: title,
-                subtitle: subtitle),
+              height: block.height,
+              width: block.width,
+              leading: leading,
+              ending: ending,
+              title: title,
+              subtitle: subtitle,
+            ),
           );
+          break;
+        case BlockTypes.divider:
+          blocks.add(DividerBlock());
           break;
       }
     }

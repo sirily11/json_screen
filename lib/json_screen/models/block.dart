@@ -26,7 +26,8 @@ enum BlockTypes {
 
   newline,
   countdown,
-  listItem
+  listItem,
+  divider
 }
 
 enum ListStyles { unordered, ordered }
@@ -43,7 +44,11 @@ class Block {
   /// Content of the block
   String content;
 
-  Block({this.types, this.content, this.label});
+  double width;
+
+  double height;
+
+  Block({this.types, this.content, this.label, this.width, this.height});
 
   factory Block.fromJSON(Map<String, dynamic> json) {
     BlockTypes t = BlockTypes.values.firstWhere(
@@ -51,14 +56,21 @@ class Block {
       orElse: () => null,
     );
 
-    return Block(content: json['content'], types: t);
+    return Block(
+      content: json['content'],
+      types: t,
+      height: json['height'],
+      width: json['width'],
+    );
   }
 
   Map<String, dynamic> toJSON() {
     return {
       "content": content,
       "types": types.toString().replaceFirst("BlockTypes.", ""),
-      "label": label
+      "label": label,
+      "height": height,
+      "width": width
     };
   }
 }
@@ -70,8 +82,12 @@ class DataBlock extends Block {
   /// Block's data
   String data;
 
-  DataBlock({this.data, String content, this.label})
-      : super(content: content, label: label);
+  double width;
+
+  double height;
+
+  DataBlock({this.data, String content, this.label, this.height, this.width})
+      : super(content: content, label: label, height: height, width: width);
 
   @override
   Map<String, dynamic> toJSON() {
@@ -79,7 +95,9 @@ class DataBlock extends Block {
       "content": content,
       "types": types.toString().replaceFirst("BlockTypes.", ""),
       "data": data,
-      "label": label
+      "label": label,
+      "height": height,
+      "width": width
     };
   }
 }
@@ -128,12 +146,16 @@ class TextBlock extends Block {
   @override
   String content;
 
+  final double width;
+  final double height;
+
   final BlockTypes types = BlockTypes.text;
 
   @override
   String label;
 
-  TextBlock({this.content, this.label}) : super(content: content, label: label);
+  TextBlock({this.content, this.label, this.height, this.width})
+      : super(content: content, label: label, height: height, width: width);
 
   factory TextBlock.copyWith({String content, String label}) {
     return TextBlock(content: content, label: label);
@@ -144,12 +166,19 @@ class TextBlock extends Block {
       String content = json['content'];
 
       return TextBlock(
-          content: content.substring(0, content.length - 1),
-          label: json['label']);
+        content: content.substring(0, content.length - 1),
+        label: json['label'],
+        height: json['height'],
+        width: json['width'],
+      );
     }
 
     return TextBlock(
-        content: (json['content'] as String), label: json['label']);
+      content: (json['content'] as String),
+      label: json['label'],
+      height: json['height'],
+      width: json['width'],
+    );
   }
 }
 
@@ -164,16 +193,40 @@ class ImageBlock extends DataBlock {
   @override
   String label;
 
-  ImageBlock({this.content, String data, this.label})
-      : super(content: content, data: data, label: label);
+  final double width;
+  final double height;
 
-  factory ImageBlock.copyWith({String content, String data, String label}) {
-    return ImageBlock(content: content, data: data, label: label);
+  ImageBlock({this.content, String data, this.label, this.height, this.width})
+      : super(
+          content: content,
+          data: data,
+          label: label,
+          height: height,
+          width: width,
+        );
+
+  factory ImageBlock.copyWith(
+      {String content,
+      String data,
+      String label,
+      double height,
+      double width}) {
+    return ImageBlock(
+        content: content,
+        data: data,
+        label: label,
+        height: height,
+        width: width);
   }
 
   factory ImageBlock.fromJSON(Map<String, dynamic> json) {
     return ImageBlock(
-        content: json['content'], data: json['data'], label: json['label']);
+      content: json['content'],
+      data: json['data'],
+      label: json['label'],
+      height: json['height'],
+      width: json['width'],
+    );
   }
 }
 
@@ -187,19 +240,30 @@ class HeaderBlock extends Block {
   @override
   String label;
 
+  final double width;
+  final double height;
+
   /// Header level. For example header 1
   int level;
 
-  HeaderBlock({this.level = 3, this.content, this.label})
-      : super(content: content, label: label);
+  HeaderBlock(
+      {this.level = 3, this.content, this.label, this.width, this.height})
+      : super(content: content, label: label, height: height, width: width);
 
-  factory HeaderBlock.copyWith({String content, String label}) {
-    return HeaderBlock(content: content, label: label);
+  factory HeaderBlock.copyWith(
+      {String content, String label, double height, double width}) {
+    return HeaderBlock(
+        content: content, label: label, height: height, width: width);
   }
 
   factory HeaderBlock.fromJSON(Map<String, dynamic> json) {
     return HeaderBlock(
-        content: json['content'], level: json['level'], label: json['label']);
+      content: json['content'],
+      level: json['level'],
+      label: json['label'],
+      height: json['height'],
+      width: json['width'],
+    );
   }
 
   @override
@@ -208,7 +272,9 @@ class HeaderBlock extends Block {
       "content": content,
       "level": level,
       "label": "label",
-      "types": "header"
+      "types": "header",
+      "height": height,
+      "width": width
     };
   }
 }
@@ -372,17 +438,38 @@ class ListItemBlock extends Block {
   final Block title;
   final Block subtitle;
   final Block ending;
+  final double width;
+  final double height;
 
-  ListItemBlock({this.leading, this.ending, this.subtitle, this.title});
+  ListItemBlock(
+      {this.leading,
+      this.ending,
+      this.subtitle,
+      this.title,
+      block,
+      this.height,
+      this.width});
 
   @override
   Map<String, dynamic> toJSON() {
     return {
-      "leading": leading.toJSON(),
-      "title": title.toJSON(),
-      "ending": ending.toJSON(),
-      "subtitle": subtitle.toJSON(),
-      "types": types.toString().replaceFirst("BlockTypes.", "")
+      "leading": leading?.toJSON(),
+      "title": title?.toJSON(),
+      "ending": ending?.toJSON(),
+      "subtitle": subtitle?.toJSON(),
+      "types": types?.toString()?.replaceFirst("BlockTypes.", ""),
+      "height": height,
+      "width": width
     };
+  }
+}
+
+class DividerBlock extends Block {
+  @override
+  BlockTypes types = BlockTypes.divider;
+
+  @override
+  Map<String, dynamic> toJSON() {
+    return {"types": types.toString().replaceFirst("BlockTypes.", "")};
   }
 }

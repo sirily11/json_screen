@@ -5,11 +5,20 @@ enum ContainerTypes { container, horizontal, story, form, timeline, list }
 /// Base Container
 class Container<T extends Block> {
   ContainerTypes types = ContainerTypes.container;
+  double height;
+  double width;
+  bool center;
 
   /// Blocks
   List<T> children = [];
 
-  Container({this.children, this.types});
+  Container({
+    this.children,
+    this.types,
+    this.height,
+    this.width,
+    this.center = false,
+  });
 
   /// return type of the container
   factory Container.fromJSON(Map<String, dynamic> json) {
@@ -17,16 +26,31 @@ class Container<T extends Block> {
       (element) => element.toString() == "ContainerTypes." + json['types'],
       orElse: () => null,
     );
-    return Container(types: t);
+    return Container(
+      types: t,
+      height: json['height'],
+      width: json['width'],
+      center: json['center'],
+    );
   }
 
-  factory Container.copyWith({List<T> children}) =>
-      Container(children: children, types: ContainerTypes.container);
+  factory Container.copyWith(
+          {List<T> children, bool center, double width, double height}) =>
+      Container(
+        children: children,
+        types: ContainerTypes.container,
+        center: center,
+        width: width,
+        height: height,
+      );
 
   toJSON() {
     return {
       "types": types.toString().replaceFirst("ContainerTypes.", ""),
-      "blocks": children.map((e) => e.toJSON()).toList()
+      "height": height,
+      "width": width,
+      "center": center,
+      "blocks": children.map((e) => e.toJSON()).toList(),
     };
   }
 }
@@ -34,8 +58,11 @@ class Container<T extends Block> {
 /// Horizontal Carousel Container
 class HorizontalCarousel<T extends Block> extends Container {
   ContainerTypes types = ContainerTypes.horizontal;
-  HorizontalCarousel({List<T> children, ContainerTypes types})
-      : super(children: children, types: types);
+  double height;
+  double width;
+  HorizontalCarousel(
+      {List<T> children, ContainerTypes types, this.width, this.height})
+      : super(children: children, types: types, height: height, width: width);
 
   factory HorizontalCarousel.copyWith({List<T> children}) =>
       HorizontalCarousel(children: children);

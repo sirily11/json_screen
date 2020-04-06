@@ -114,5 +114,42 @@ void main() {
       expect(listContainer.children[0].title.content, "hello");
       expect(listContainer.children[0].subtitle.content, "hello");
     });
+
+    test("Parse list container 2", () {
+      var xml = '''<page>
+    <list-container>
+        <list-item>
+            <list-title>
+                <text>hello</text>
+            </list-title>
+            <list-subtitle>
+                <text>hello</text>
+            </list-subtitle>
+        </list-item>
+    </list-container>
+</page>
+  ''';
+      var page = XMLConverter(xml: xml).convert();
+      ListViewContainer listContainer = page[0].containers[0];
+      expect(listContainer.children[0].leading, null);
+      expect(listContainer.children[0].ending, null);
+      expect(listContainer.children[0].title.content, "hello");
+      expect(listContainer.children[0].subtitle.content, "hello");
+    });
+
+    test("Parse list container 3", () {
+      var xml = '''<page>
+    <list-container>
+        <list-item>
+            <list-title>
+            </list-title>
+        </list-item>
+    </list-container>
+</page>
+  ''';
+      var page = XMLConverter(xml: xml).convert();
+      ListViewContainer listContainer = page[0].containers[0];
+      expect(listContainer.children[0].title, null);
+    });
   });
 }

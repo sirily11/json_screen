@@ -66,7 +66,7 @@ class BlockCard extends StatelessWidget {
           "${block.types.toString()}",
         ),
         subtitle: Text(
-            "${block.content.substring(0, min(block.content.length, 20))}"),
+            "${block.content?.substring(0, min(block.content.length, 20))}"),
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(bottom: 8, left: 20, right: 40),

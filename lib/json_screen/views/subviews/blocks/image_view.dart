@@ -20,6 +20,8 @@ class ImageView extends StatelessWidget {
         },
         child: Image.network(
           block.data ?? "",
+          height: block.height,
+          width: block.width,
         ),
       ),
     );

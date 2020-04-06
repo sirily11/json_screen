@@ -7,9 +7,11 @@ import 'package:json_screen/json_screen/models/block.dart';
 import 'package:json_screen/json_screen/models/page.dart';
 import 'package:json_screen/json_screen/views/json_screen.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/countdown_view.dart';
+import 'package:json_screen/json_screen/views/subviews/blocks/dash_seperator.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/header_view.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/image_view.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/link_view.dart';
+import 'package:json_screen/json_screen/views/subviews/blocks/list_item_view.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/list_view.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/quote_view.dart';
 import 'package:json_screen/json_screen/views/subviews/blocks/table_view.dart';
@@ -20,7 +22,8 @@ import 'package:timeline_list2/timeline.dart';
 import 'package:timeline_list2/timeline_model.dart';
 
 /// render List of blocks
-Widget renderBlock(Block block, OnLinkTap onlinkTap, OnImageTap onImageTap) {
+Widget renderBlock(Block block, OnLinkTap onlinkTap, OnImageTap onImageTap,
+    {bool center = false}) {
   if (block is ImageBlock) {
     return ImageView(block: block, onImageTap: onImageTap);
   } else if (block is NewLineBlock) {
@@ -30,6 +33,7 @@ Widget renderBlock(Block block, OnLinkTap onlinkTap, OnImageTap onImageTap) {
   } else if (block is TextBlock) {
     return TextView(
       block: block,
+      center: center,
     );
   } else if (block is HeaderBlock) {
     return HeaderView(
@@ -60,6 +64,8 @@ Widget renderBlock(Block block, OnLinkTap onlinkTap, OnImageTap onImageTap) {
     return CountdownView(
       block: block,
     );
+  } else if (block is DividerBlock) {
+    return Divider();
   }
   return Container();
 }
@@ -85,7 +91,10 @@ Widget renderPage(Page page, BuildContext context, OnLinkTap onlinkTap,
 StoryItem renderStoryBlock(Block block, BuildContext context) {
   if (block is ImageBlock) {
     return StoryItem.inlineImage(
-      NetworkImage(block.data ?? "", scale: 1),
+      NetworkImage(
+        block.data ?? "",
+        scale: 1,
+      ),
       caption: Text(block.content),
     );
   }
@@ -98,6 +107,8 @@ dynamic renderContainer(c.Container container, BuildContext context,
     OnLinkTap onlinkTap, OnImageTap onImageTap) {
   if (container is c.HorizontalCarousel) {
     return Container(
+      height: container.height ?? 400,
+      width: container.width ?? MediaQuery.of(context).size.width,
       key: Key("horizontal"),
       child: CarouselSlider(
         enableInfiniteScroll: false,
@@ -108,11 +119,33 @@ dynamic renderContainer(c.Container container, BuildContext context,
             .toList(),
       ),
     );
+  } else if (container is c.ListViewContainer) {
+    if (container.children.length == 0) {
+      return Center(
+        child: Text(
+          "List Item is required",
+          style: TextStyle(color: Colors.red),
+        ),
+      );
+    }
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: container.children.length,
+      separatorBuilder: (c, i) => DashSeperator(),
+      itemBuilder: (c, index) {
+        return ListItemView(
+          block: container.children[index],
+          onImageTap: onImageTap,
+          onLinkTap: onlinkTap,
+        );
+      },
+    );
   } else if (container is c.StoryContainer) {
     if (container.children.length == 0) {
       return Center(
         child: Text(
-          "Blocks required",
+          "Blocks is required",
           style: TextStyle(color: Colors.red),
         ),
       );
@@ -185,8 +218,21 @@ dynamic renderContainer(c.Container container, BuildContext context,
       if (e is NewLineBlock) {
         return TextSpan(text: "\n");
       }
+      var child = renderBlock(
+        e,
+        onlinkTap,
+        onImageTap,
+        center: container.center,
+      );
+      if (container.center) {
+        return WidgetSpan(
+          child: Center(
+            child: child,
+          ),
+        );
+      }
       return WidgetSpan(
-        child: renderBlock(e, onlinkTap, onImageTap),
+        child: child,
       );
     }).toList(),
   );
