@@ -195,9 +195,16 @@ class ImageBlock extends DataBlock {
 
   final double width;
   final double height;
+  final String baseURL;
 
-  ImageBlock({this.content, String data, this.label, this.height, this.width})
-      : super(
+  ImageBlock({
+    this.content,
+    String data,
+    this.label,
+    this.height,
+    this.width,
+    this.baseURL,
+  }) : super(
           content: content,
           data: data,
           label: label,
@@ -205,12 +212,13 @@ class ImageBlock extends DataBlock {
           width: width,
         );
 
-  factory ImageBlock.copyWith(
-      {String content,
-      String data,
-      String label,
-      double height,
-      double width}) {
+  factory ImageBlock.copyWith({
+    String content,
+    String data,
+    String label,
+    double height,
+    double width,
+  }) {
     return ImageBlock(
         content: content,
         data: data,
@@ -219,14 +227,14 @@ class ImageBlock extends DataBlock {
         width: width);
   }
 
-  factory ImageBlock.fromJSON(Map<String, dynamic> json) {
+  factory ImageBlock.fromJSON(Map<String, dynamic> json, {String baseURL}) {
     return ImageBlock(
-      content: json['content'],
-      data: json['data'],
-      label: json['label'],
-      height: json['height'],
-      width: json['width'],
-    );
+        content: json['content'],
+        data: json['data'],
+        label: json['label'],
+        height: json['height'],
+        width: json['width'],
+        baseURL: baseURL);
   }
 }
 

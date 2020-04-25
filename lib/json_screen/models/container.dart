@@ -30,7 +30,7 @@ class Container<T extends Block> {
       types: t,
       height: json['height'],
       width: json['width'],
-      center: json['center'],
+      center: json['center'] ?? false,
     );
   }
 

@@ -19,6 +19,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool useGUI = true;
   String json = "";
+  String baseURL;
 
   @override
   void initState() {
@@ -43,6 +44,7 @@ class _HomePageState extends State<HomePage> {
                     provider.loadPageFromString(
                       content,
                       types: isJSON ? DataTypes.json : DataTypes.xml,
+                      baseURL: baseURL,
                     );
                     fileStream.listen((event) async {
                       File newFile = File(event.path);
@@ -51,6 +53,7 @@ class _HomePageState extends State<HomePage> {
                         content,
                         isUpdate: true,
                         showSnackbar: false,
+                        baseURL: baseURL,
                         types: isJSON ? DataTypes.json : DataTypes.xml,
                       );
                     });
@@ -74,6 +77,39 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   }
+                }),
+            MenuItem(
+                label: "Set Base URL",
+                onClicked: () {
+                  TextEditingController controller =
+                      TextEditingController(text: baseURL);
+                  showDialog(
+                    context: context,
+                    builder: (c) => AlertDialog(
+                      title: Text("Set Base URL"),
+                      content: Container(
+                        child: TextField(
+                          decoration: InputDecoration(labelText: "Base URL"),
+                          controller: controller,
+                        ),
+                      ),
+                      actions: [
+                        FlatButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text("Cancel"),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            setState(() {
+                              baseURL = controller.text;
+                            });
+                          },
+                          child: Text("OK"),
+                        )
+                      ],
+                    ),
+                  );
                 }),
           ],
         ),
@@ -198,6 +234,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                 ),
                 child: JsonScreen(
+                  baseURL: baseURL,
                   onImageTap: (image) async {
                     print(image);
                   },

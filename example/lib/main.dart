@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
           title: Text("JSON Screen"),
         ),
         body: JsonScreen(
+          baseURL: "https://google.com",
           onImageTap: (string) async {
             print(string);
           },
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
                       "types": "image",
                       "content": "google",
                       "data":
-                          "https://www.google.com/logos/doodles/2020/spring-2020-northern-hemisphere-6753651837108323-l.png"
+                          "/logos/doodles/2020/spring-2020-northern-hemisphere-6753651837108323-l.png"
                     },
                     {
                       "types": "header",

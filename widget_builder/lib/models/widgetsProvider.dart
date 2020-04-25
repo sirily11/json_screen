@@ -29,12 +29,13 @@ class WidgetProvider with ChangeNotifier {
   void loadPageFromString(String data,
       {bool isUpdate = false,
       bool showSnackbar = true,
+      String baseURL,
       @required DataTypes types}) {
     try {
       if (types == DataTypes.json) {
         var parsed = JsonDecoder().convert(data);
         if (parsed is List) {
-          var p = JSONConverter(json: parsed).convert();
+          var p = JSONConverter(json: parsed, baseURL: baseURL).convert();
           this.pages = p;
           if (showSnackbar) {
             key.currentState.showSnackBar(
@@ -45,7 +46,7 @@ class WidgetProvider with ChangeNotifier {
           }
         }
       } else {
-        var p = XMLConverter(xml: data).convert();
+        var p = XMLConverter(xml: data, baseURL: baseURL).convert();
         this.pages = p;
         if (showSnackbar) {
           key.currentState.showSnackBar(

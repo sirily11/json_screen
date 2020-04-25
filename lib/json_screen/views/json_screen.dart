@@ -17,12 +17,17 @@ class JsonScreen extends StatefulWidget {
   final OnLinkTap onLinkTap;
   final OnImageTap onImageTap;
 
+  /// Base image url.
+  /// If the conver is defined, then this field will have no effect
+  final String baseURL;
+
   JsonScreen({
     this.json,
     this.onImageTap,
     this.onLinkTap,
     this.pages,
     this.converter,
+    this.baseURL,
   });
 
   @override
@@ -37,8 +42,11 @@ class _JsonScreenState extends State<JsonScreen> {
   void initState() {
     if (widget.json != null) {
       print("convert json");
-      Converter converter =
-          widget.converter ?? JSONConverter(json: widget.json);
+      Converter converter = widget.converter ??
+          JSONConverter(
+            json: widget.json,
+            baseURL: widget.baseURL,
+          );
       this.pages = converter.convert();
     } else if (widget.pages != null) {
       this.pages = widget.pages;
@@ -52,9 +60,8 @@ class _JsonScreenState extends State<JsonScreen> {
   @override
   void didUpdateWidget(JsonScreen oldWidget) {
     if (widget.json != null && oldWidget.json != widget.json) {
-      JSONConverter converter =
-          widget.converter ?? JSONConverter(json: widget.json);
-
+      JSONConverter converter = widget.converter ??
+          JSONConverter(json: widget.json, baseURL: widget.baseURL);
       setState(() {
         this.pages = converter.convert();
       });

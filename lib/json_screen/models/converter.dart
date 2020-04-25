@@ -17,7 +17,10 @@ class XMLConverter implements Converter {
   /// json data
   String xml;
 
-  XMLConverter({this.xml});
+  /// base url for image
+  final String baseURL;
+
+  XMLConverter({this.xml, this.baseURL});
 
   /// Convert containers xml
   List<Container> _convertContainer(List<xmlParser.XmlNode> xmlNodes) {
@@ -180,6 +183,7 @@ class XMLConverter implements Converter {
                 content: content,
                 height: height,
                 width: width,
+                baseURL: baseURL,
               ),
             );
             break;
@@ -288,9 +292,10 @@ class XMLConverter implements Converter {
 /// into pages.
 class JSONConverter implements Converter {
   /// json data
-  List<dynamic> json;
+  final List<dynamic> json;
+  final String baseURL;
 
-  JSONConverter({this.json});
+  JSONConverter({this.json, this.baseURL});
 
   @override
   List<Page> convert() {
@@ -320,7 +325,15 @@ class JSONConverter implements Converter {
       double width = j['width'];
       switch (container.types) {
         case ContainerTypes.container:
-          containers.add(Container(children: blocks, types: container.types));
+          containers.add(
+            Container(
+              children: blocks,
+              types: container.types,
+              center: container.center,
+              width: container.width,
+              height: container.height,
+            ),
+          );
           break;
         case ContainerTypes.horizontal:
           containers.add(HorizontalCarousel(
@@ -341,7 +354,11 @@ class JSONConverter implements Converter {
               .add(TimelineContainer(children: blocks, types: container.types));
           break;
         case ContainerTypes.list:
-          containers.add(ListViewContainer(children: blocks));
+          containers.add(
+            ListViewContainer(
+              children: blocks.map((e) => e as ListItemBlock).toList(),
+            ),
+          );
           break;
       }
     }
@@ -351,6 +368,9 @@ class JSONConverter implements Converter {
   /// convert json into blocks
   List<Block> _convertBlock(List<dynamic> blockJSON) {
     List<Block> blocks = [];
+    if (blockJSON == null || (blockJSON.length > 0 && blockJSON[0] == null)) {
+      return [];
+    }
     for (var j in blockJSON) {
       Block block = Block.fromJSON(j);
 
@@ -363,7 +383,7 @@ class JSONConverter implements Converter {
           }
           break;
         case BlockTypes.image:
-          blocks.add(ImageBlock.fromJSON(j));
+          blocks.add(ImageBlock.fromJSON(j, baseURL: baseURL));
           break;
         case BlockTypes.quote:
           blocks.add(QuoteBlock.fromJSON(j));
@@ -371,11 +391,13 @@ class JSONConverter implements Converter {
           break;
         case BlockTypes.table:
           List<Block> columns = this._convertBlock(j['columns']);
-          List<List<Block>> rows = (j['rows'] as List<List>)
-              .map((e) => this._convertBlock(e))
-              .toList();
+          List rows = (j['rows']).map((e) => this._convertBlock(e)).toList();
           blocks.add(
-            TableBlock(columns: columns, rows: rows, content: block.content),
+            TableBlock(
+              columns: columns,
+              rows: rows.map((e) => e as List<Block>).toList(),
+              content: block.content,
+            ),
           );
           blocks.add(NewLineBlock());
           break;
@@ -404,17 +426,17 @@ class JSONConverter implements Converter {
           blocks.add(CountDownBlock.fromJSON(j));
           break;
         case BlockTypes.listItem:
-          Block leading = this._convertBlock(j['leading']).length > 0
+          Block leading = this._convertBlock([j['leading']]).length > 0
               ? this._convertBlock(j['leading']).first
               : null;
-          Block ending = this._convertBlock(j['ending']).length > 0
-              ? this._convertBlock(j['ending']).first
+          Block ending = this._convertBlock([j['ending']]).length > 0
+              ? this._convertBlock([j['ending']]).first
               : null;
-          Block title = this._convertBlock(j['title']).length > 0
-              ? this._convertBlock(j['title']).first
+          Block title = this._convertBlock([j['title']]).length > 0
+              ? this._convertBlock([j['title']]).first
               : null;
-          Block subtitle = this._convertBlock(j['subtitle']).length > 0
-              ? this._convertBlock(j['subtitle']).first
+          Block subtitle = this._convertBlock([j['subtitle']]).length > 0
+              ? this._convertBlock([j['subtitle']]).first
               : null;
           blocks.add(
             ListItemBlock(

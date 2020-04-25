@@ -16,7 +16,7 @@ dependencies:
   page_view_indicators: ^1.3.1
   story_view: ^0.11.4
   webview_flutter: ^0.3.19+9
-  json_schema_form: ^0.8.5
+  json_schema_form:
   xml: ^3.5.0
   timeline_list2: ^0.1.0
   dio: ^3.0.9
